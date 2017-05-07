@@ -11,5 +11,5 @@ Project       | Description                       �
 --------------|---------------------------------------------| ------------------|------------|---------|------
 af104-fsk     | Oil tank level sensor data                  | [Wemos D1 mini](https://github.com/griemide/WemosD1mini)     | 2017-04-21 | [261716](https://thingspeak.com/channels/261716)  | n/a
 R2 3.33       | B.Braun enviromental data monitoring        | PM20080           | 2017-04-24 | [263535](https://thingspeak.com/channels/263535)  | n/a
-RPi3          | Raspberry Pi 3 performance data             | [Raspberry Pi 3](https://github.com/griemide/RaspberryPi)    | 2017-04-29 | [265640](https://thingspeak.com/channels/265640)  | n/a
+RPi3          | Raspberry Pi 3 performance data             | [Raspberry Pi 3](https://github.com/griemide/RaspberryPi)    | 2017-04-29 | [265640](https://thingspeak.com/channels/265640)  | [Link](https://github.com/griemide/RaspberryPi/blob/master/scripts/ThingSpeak_MQTT.py)
 VRC 410       | Vailland heater operatoinal data            | [Arduino Yun](https://github.com/griemide/ArduinoYun)        | 2017-05-01 | [266302](https://thingspeak.com/channels/266302)  | [Link](https://github.com/griemide/ArduinoYun/tree/master/python)
