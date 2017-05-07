@@ -5,16 +5,11 @@ ThingSpeak is an open data platform for the Internet of Things. Your device or a
 
 At the heart of ThingSpeak is a time-series database. ThingSpeak provides users with free time-series data storage in channels. Each channel can include up to eight data fields. This tutorial provides an introduction to some of the applications of ThingSpeak, a conceptual overview of how ThingSpeak stores time-series data, and how MATLAB analysis is incorporated in ThingSpeak
 
-https://thingspeak.com/channels/261716
-
-
-IoT chart for feasibility study
-
 
 ## Projects
 Project       | Description                                 | platfom           | Created    | Channel | Wiki
 --------------|---------------------------------------------| ------------------|------------|---------|------
 af104-fsk     | Oil tank level sensor data                  | Wemos D1 mini     | 2016-02-15 | 261716  | n/a
+R2 3.33       | B.Braun enviromental data monitoring        | PM20080           | 2016-05-15 | [263535](https://thingspeak.com/channels/263535)  | n/a
 RPi3          | Raspberry Pi 3 performance data             | Raspberry Pi 3    | 2016-02-15 | 265640  | n/a
 VRC 410       | Vailland heater operatoinal data            | Arduino Yun       | 2016-05-15 | 266302  | [Link](https://github.com/griemide/ArduinoYun/tree/master/python)
-R2 3.330      | B.Braun enviromental data monitoring        | PM20080           | 2016-05-15 | [263535](https://thingspeak.com/channels/263535)  | [Link](https://thingspeak.com/channels/263535)
