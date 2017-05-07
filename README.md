@@ -10,36 +10,11 @@ https://thingspeak.com/channels/261716
 
 IoT chart for feasibility study
 
-```html
-<iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/261716/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=100&title=WLAN&type=line&yaxismax=0&yaxismin=-100"></iframe>
-````
-
-``` html
-.video-container iframe {
-  position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-}
-
-.video-container {
-	position: relative;
-	padding-bottom: 56.25%; /* Default for 1600x900 videos 16:9 ratio*/
-	padding-top: 0;
-	height: 0;
-	overflow: hidden;
-}
-
-<div class="video-container">
-  <iframe width="560" height="315" src="//www.youtube.com/embed/7478Z7u2ZOA?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
-```
-
 
 ## Projects
-Project       | Description                                 | MAC address       | Created    | Update     | Wiki
---------------|---------------------------------------------| ------------------|------------|------------|------
-Dweet.IO      | Lua example using ntp, http (POST), OTA     | 5c:cf:7f:0f:79:1f | 2016-02-15 | 2016-04-11 | n/a
-FM Radio      | RDS using Adafruit Si4713 breakout board    | 18:fe:34:d4:c7:4e | 2016-02-15 | 2016-04-11 | n/a
-Arduino OTA   | merge of OTA & PWM on Wemos D1 mini         | 18:fe:34:e1:b4:3e | 2016-05-15 | 2016-05-16 | [Link](https://github.com/griemide/NodeMCU/tree/master/hardware/wemosD1mini)
+Project       | Description                                 | platfom           | Created    | Channel | Wiki
+--------------|---------------------------------------------| ------------------|------------|---------|------
+af104-fsk     | Oil tank level sensor data                  | Wemos D1 mini     | 2016-02-15 | 261716  | n/a
+RPi3          | Raspberry Pi 3 performance data             | Raspberry Pi 3    | 2016-02-15 | 265640  | n/a
+VRC 410       | Vailland heater operatoinal data            | Arduino Yun       | 2016-05-15 | 266302  | [Link](https://github.com/griemide/ArduinoYun/tree/master/python)
+R2 3.330      | B.Braun enviromental data monitoring        | PM20080           | 2016-05-15 | [263535](https://thingspeak.com/channels/263535)  | [Link](https://thingspeak.com/channels/263535)
