@@ -1,5 +1,5 @@
 # ThinkSpeak
-Managing IoT devices via ThinkSpeak 
+Managing IoT devices via [ThinkSpeak](https://thingspeak.com/)    / Link to [Public Channels](https://thingspeak.com/channels/public)
 
 ThingSpeak is an open data platform for the Internet of Things. Your device or application can communicate with ThingSpeak using a RESTful API, and you can either keep your data private, or make it public. In addition, use ThingSpeak to analyze and act on your data. ThingSpeak provides an online text editor to perform data analysis and visualization using MATLAB®. You can also perform actions such as running regularly scheduled MATLAB code or sending a tweet when your data passes a defined threshold. 
 
