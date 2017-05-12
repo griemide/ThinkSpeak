@@ -8,5 +8,5 @@
 
 ## Visualization
 
-![Visualization](raw data visualization.gif)
+![Visualization](raw_data_visualization.gif)
 
