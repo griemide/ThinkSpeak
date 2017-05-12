@@ -6,4 +6,7 @@
 
 [Visualization](https://thingspeak.com/channels/263535) / [Evaluation](https://thingspeak.com/channels/264618) / [Configuration](https://thingspeak.com/channels/265494)
 
+## Visualization
+
+![Visualization](raw data visualization.gif)
 
