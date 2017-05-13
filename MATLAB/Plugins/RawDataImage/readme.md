@@ -1,4 +1,4 @@
-### Plugin: Raw Data Image
+# Plugin: Raw Data Image
 
 ## Name
 ``` text
@@ -24,11 +24,15 @@ Raw Data Image (original)
 
 ## CSS
 ```css
-<style type="text/css">  body { background-color: #fff; }</style>
+<style type="text/css">
+  body { background-color: #fff; }
+</style>
 ````
 
 ## JavaScript
 ```javascript
-<script type="text/javascript">  document.write('<div>&nbsp; javascript active </div>');</script>
+<script type="text/javascript">
+  document.write('<div>&nbsp; javascript active </div>');
+</script>
 ````
 
