@@ -23,17 +23,17 @@ readAPIKey = 'EKA45PCKK9A7X0XM';
 
 tempF = thingSpeakRead(readChannelID, 'Fields', TemperatureFieldID, 'NumPoints', 3073, 'ReadKey', readAPIKey);
 
-%example R2.33 temperatur color #39a684
+%example R2.33 temperatur color #39a684 (calculated by hand)
 col = [0.224 0.651 0.518]
 
 %example R2.33 temperatur color #39a684
-r = hex2dec('39')/255
-g = hex2dec('a6')/255
-b = hex2dec('84')/255
+r = hex2dec('39')/255;
+g = hex2dec('a6')/255;
+b = hex2dec('84')/255;
 faceCol = [r g b]
 
 histogram(tempF,'FaceColor',faceCol);
 xlabel('Temperature (°C)');
 ylabel('Number of Measurements');
 title('Histogram of Temperature variation');
-grid on
+grid on;
