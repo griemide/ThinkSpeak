@@ -1,4 +1,4 @@
-Read temperature for the last 10 hours from a ThingSpeak channel and
+% Read temperature for the last 10 hours from a ThingSpeak channel and
 % visualize temperature variations using the MATLAB HISTOGRAM function.
 
 % https://de.mathworks.com/help/matlab/ref/histogram.html
@@ -23,7 +23,16 @@ readAPIKey = 'EKA45PCKK9A7X0XM';
 
 tempF = thingSpeakRead(readChannelID, 'Fields', TemperatureFieldID, 'NumPoints', 3073, 'ReadKey', readAPIKey);
 
-histogram(tempF,'FaceColor','red');
+%example R2.33 temperatur color #39a684
+col = [0.224 0.651 0.518]
+
+%example R2.33 temperatur color #39a684
+r = hex2dec('39')/255
+g = hex2dec('a6')/255
+b = hex2dec('84')/255
+faceCol = [r g b]
+
+histogram(tempF,'FaceColor',faceCol);
 xlabel('Temperature (°C)');
 ylabel('Number of Measurements');
 title('Histogram of Temperature variation');
