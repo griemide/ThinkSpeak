@@ -1,10 +1,12 @@
+<!--
+https://developers.google.com/chart/interactive/docs/gallery/gauge
+//-->
+
 <html>
   <head>
 
   <title>Google Gauge - ThingSpeak</title>
 
-  %%PLUGIN_CSS%%
-  %%PLUGIN_JAVASCRIPT%%
 
   </head>
 
@@ -18,7 +20,7 @@
 </html>
 
 <style type="text/css">
-  body { background-color: #ddd; }
+  body { background-color: #fff; }
   #container { height: 100%; width: 100%; display: table; }
   #inner { vertical-align: middle; display: table-cell; }
   #gauge_div { width: 240px; margin: 0 auto; }
@@ -82,18 +84,23 @@
 
     chart = new google.visualization.Gauge(document.getElementById('gauge_div'));
     options = {
+       animation:{
+        startup: true,
+        duration: 1000,
+        easing: 'out',
+       },
        width: 240, height: 240,
        min: 0, max: max_gauge_value,
        greenFrom: 0, greenTo: 10,
        yellowFrom: 90, yellowTo: 105,
        redFrom: 105, redTo: max_gauge_value,
-       minorTicks: 10 
+       majorTicks: 4, minorTicks: 10 
     };
     
     loadData();
 
     // load new data every 15 seconds
-    setInterval('loadData()', 15000);
+    setInterval('loadData()', 2000);
   }
 
 </script>
