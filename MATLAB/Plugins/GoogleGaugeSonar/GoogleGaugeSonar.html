@@ -73,6 +73,7 @@
 
   // initialize the chart
   function initChart() {
+    
 
     data = new google.visualization.DataTable();
     data.addColumn('string', 'Label');
@@ -80,8 +81,15 @@
     data.addRows(1);
 
     chart = new google.visualization.Gauge(document.getElementById('gauge_div'));
-    options = {width: 240, height: 240, min: 0, max: max_gauge_value, redFrom:105, redTo: max_gauge_value, yellowFrom:90, yellowTo: 105, minorTicks: 10};
-
+    options = {
+       width: 240, height: 240,
+       min: 0, max: max_gauge_value,
+       greenFrom: 0, greenTo: 10,
+       yellowFrom: 90, yellowTo: 105,
+       redFrom: 105, redTo: max_gauge_value,
+       minorTicks: 10 
+    };
+    
     loadData();
 
     // load new data every 15 seconds
@@ -89,4 +97,5 @@
   }
 
 </script>
+
 
