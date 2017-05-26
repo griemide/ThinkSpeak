@@ -5,16 +5,26 @@
 fieldSamples = thingSpeakRead(261716, 'Fields', 2, 'NumPoints', 1000);
 
 % Channel color used in channel field config window: #317db5
-r = hex2dec('31')/255;
-g = hex2dec('7d')/255;
-b = hex2dec('b5')/255;
+% r = hex2dec('31')/255;
+% g = hex2dec('7d')/255;
+% b = hex2dec('b5')/255;
+
+% use decimal values if pipette fuction used in windows paint app
+r = 165/255;
+g = 40/255;
+b = 41/255;
 textColor = [r g b]  % print output
+
+% fieldSamples array may contain Not A Number (NaN) values
+% function mean will result in a NaN result if array contain one or more NaN
+% due to licencing reasons for function nanmean use following workaround
+fieldSamples(isnan(fieldSamples)) = [];
 
 maxValue = max(fieldSamples);
 meanValue = mean(fieldSamples);
 minValue = min(fieldSamples);
 
-UOM = 'cm';
+UOM = ' cm';
 UOMmin = [' ' UOM ' (min)'];
 UOMmax = [' ' UOM ' (max)'];
 
