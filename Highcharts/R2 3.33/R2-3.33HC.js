@@ -2,26 +2,25 @@
 Script:   R2-3.33HC.js
 Author:   Michael Gries (c)2017
 Creation: 2017-05-28
-Modified: 2017-05-28
+Modified: 2017-05-29
 */
-
-      
+    
 // Webpage Javascript to chart multiple ThingSpeak channels on two axis with navigator, load historical data, and export cvs data.
 // Public Domain, by turgo.
-//  The charting library is called HighStock.  It is awesome!  HighSoft, the owners say, 
-//   "Do you want to use Highstock for a personal or non-profit project? Then you can use Highchcarts for 
-//   free under the  Creative Commons Attribution-NonCommercial 3.0 License. "
-// http://forum.arduino.cc/index.php?topic=213058.msg1560990#msg1560990
+// The charting library is called HighStock.  It is awesome!  HighSoft, the owners say, 
+// "Do you want to use Highstock for a personal or non-profit project? 
+//     Then you can use Highchcarts for free under the 
+// Creative Commons Attribution-NonCommercial 3.0 License. "
+// source reference: http://forum.arduino.cc/index.php?topic=213058.msg1560990#msg1560990
 var dynamicChart;
 var channelsLoaded = 0;
 // put your ThingSpeak Channel#, Channel Name, and API keys here.
 // fieldList shows which field you want to load, and which axis to display that field on, 
-// the 'T' Temperature left axis, or the 'O' Other right axis.
+
 var channelKeys =[];
-//Change TO: display two fields from the same channel from a Rain gauge - 15min counts, and total counts
-//  src="http://api.thingspeak.com/channels/8652/charts/3?width=1300&height=520&results=1000&dynamic=false&title=15minTotals%20(0.5mm)" ></iframe>
+
 channelKeys.push({channelNumber:263535, name:'R2 3.33',key:'', 
-   fieldList:[{field:2,axis:'C'},{field:1,axis:'R'}]});
+   fieldList:[{field:2,axis:'T'},{field:1,axis:'H'}]});
     
 // user's timezone offset
 var myOffset = new Date().getTimezoneOffset();
@@ -187,7 +186,7 @@ $(document).ready(function()
 		credits: {
 			enabled: true,
 			href: 'https://thingspeak.com/channels/263535',
-			text: 'source: ThingSpeak channel R2 3.33 (263535)'
+			text: 'source: ThingSpeak channel R2 3.33 (263535) supported by Highchart.com'
 		},
 		rangeSelector: {
 			buttons: [{
@@ -222,8 +221,11 @@ $(document).ready(function()
 			selected: 4  //Change to 4th button as default
 		},
     title: {
-			text: 'PM20080'
-		},
+			text: 'PM20080 (SN: 01692299 906)'
+	},
+    subtitle: {
+        text: 'Langzeitmessung Büroraum R2.3.33 (31 Tage)'
+    },
 		plotOptions: {
 		  line: {
         gapSize:5
@@ -240,9 +242,18 @@ $(document).ready(function()
 				},
 				animation: true,
 				step: false,
-        turboThrehold:1000,
+        turboThreshold:1000,
 				borderWidth: 0
-			}
+			},
+			        zones: [{
+            value: 0,
+            color: '#f7a35c'
+        }, {
+            value: 50,
+            color: '#f7a35c'
+        }, {
+            color: '#f7a35c'
+        }]
 		},
     tooltip: {
       valueDecimals: 1,
@@ -257,15 +268,15 @@ $(document).ready(function()
       //return this.series.name + ':<b>' + this.y + '</b>' + n + '<br/>' + d.toDateString() + '<br/>' + d.toTimeString().replace(/\(.*\)/, "");
 			//}
     },
-		xAxis: {
-		  type: 'datetime',
-      ordinal:false,
-      min: Date.UTC(2017,03,01),
+	xAxis: {
+		type: 'datetime',
+		ordinal:false,
+		min: Date.UTC(2017,03,01),
 			dateTimeLabelFormats : {
         hour: '%l %p',
         minute: '%l:%M %p'
-      },
-      title: {
+    },
+    title: {
         text: 'LeftAxis'
 			}
 		},
@@ -276,7 +287,7 @@ $(document).ready(function()
 				//style: {color: "#7cb5ec"}
 				style: {color: "#434348"}
             },
-            id: 'R'
+            id: 'H'
     }, {
             labels: {format: '{value} °C', style: {color: "#7cb5ec"} },
             title: {
@@ -284,7 +295,7 @@ $(document).ready(function()
 				style: {color: "#7cb5ec"}
             },
             opposite: false,
-            id: 'C'
+            id: 'T'
     }],
 		exporting: {
 		  enabled: true,
