@@ -46,7 +46,7 @@ function HideAll(){
             
 }
       
-      //  This is where the chart is generated.
+//  This is where the chart is generated.
 $(document).ready(function() 
 {
  //Add Channel Load Menu
@@ -122,17 +122,17 @@ $(document).ready(function()
 	var chartOptions = {
 	  chart: 
     {
-		  renderTo: 'chart-container',
-      zoomType:'y',
-			events: 
-      {
-        load: function() 
-        {
-				  if ('true' === 'true' && (''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1)) 
-          {
-            // If the update checkbox is checked, get latest data every 15 seconds and add it to the chart
-						setInterval(function() 
-            {
+		renderTo: 'chart-container',
+		zoomType:'y',
+		events: 
+		{
+			load: function() 
+			{
+				if ('true' === 'true' && (''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1)) 
+				{
+					// If the update checkbox is checked, get latest data every 15 seconds and add it to the chart
+					setInterval(function() 
+					{
              if (document.getElementById("Update").checked)
              {
               for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
@@ -172,8 +172,6 @@ $(document).ready(function()
                     //window.console && console.log('update series name:',dynamicChart.series[chartSeriesName].name);
                     //window.console && console.log('channel keys name:',channelKeys[channelIndex].fieldList[fieldIndex].name);
                   }
-                  
-                  
                 });
                })(channelIndex);
               }
@@ -183,33 +181,41 @@ $(document).ready(function()
 				}
 			}
 		},
+		// default colors used by Highstoch release 5.x
+		// colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+		// modified colors for R2.33
+		colors: ['#39a684', '#9c416b', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
 		credits: {
 			enabled: true,
 			href: 'https://thingspeak.com/channels/263535',
 			text: 'source: ThingSpeak channel R2 3.33 (263535) supported by Highchart.com'
 		},
 		rangeSelector: {
-			buttons: [{
+			buttons: [
+			/*
+			{
 				count: 30,
 				type: 'minute',
 				text: '30m'
-			}, {
+			},
+			*/
+			{
 				count: 12,
 				type: 'hour',
 				text: '12h'
-      }, {
+			}, {
 				count: 1,
 				type: 'day',
 				text: 'D'
-      }, {
+			}, {
 				count: 1,
 				type: 'week',
 				text: 'W'
-      }, {
+			}, {
 				count: 1,
 				type: 'month',
 				text: 'M'
-      }, {
+			}, {
 				count: 1,
 				type: 'year',
 				text: 'Y'
@@ -220,15 +226,17 @@ $(document).ready(function()
 			inputEnabled: true,
 			selected: 4  //Change to 4th button as default
 		},
-    title: {
+		title: {
+			useHTML:true, 
 			text: 'PM20080 (SN: 01692299 906)'
-	},
-    subtitle: {
-        text: 'Langzeitmessung Büroraum R2.3.33 (31 Tage)'
-    },
+		},
+		subtitle: {
+			useHTML:true, 
+			text: 'Langzeitmessung B&uuml;roraum R2.3.33 (31 Tage)'
+		},
 		plotOptions: {
-		  line: {
-        gapSize:5
+			line: {
+				gapSize:5
 				//color: '#d62020'
 				//  },
 				//  bar: {
@@ -237,23 +245,20 @@ $(document).ready(function()
 				//  column: {
 			},
 			series: {
-			  marker: {
-				  radius: 2
-				},
+				marker: {radius: 2},
 				animation: true,
 				step: false,
-        turboThreshold:1000,
+				turboThreshold:1000,
 				borderWidth: 0
+				/*
+				,
+				zones: [
+					{value: 22, color: 'red'},
+					{value: 33, color: '#f7a35c'},
+					{           color: 'blue'}
+				]
+				*/
 			},
-			        zones: [{
-            value: 0,
-            color: '#f7a35c'
-        }, {
-            value: 50,
-            color: '#f7a35c'
-        }, {
-            color: '#f7a35c'
-        }]
 		},
     tooltip: {
       valueDecimals: 1,
@@ -281,19 +286,23 @@ $(document).ready(function()
 			}
 		},
 		yAxis: [{
-            labels: {format: '{value} °C', style: {color: "#434348"} },
+            labels: {format: '{value} rF%', style: {color: "#9c416b"} },
 			title: {
-                text: 'rel. Luftfeuchtigkeit [rF%]',
-				//style: {color: "#7cb5ec"}
-				style: {color: "#434348"}
+				useHTML:true, 
+				text: 'rel. Luftfeuchtigkeit [rF%]',
+				style: {color: "#9c416b"}
             },
+			allowDecimals: false,
+			offset: 50,
             id: 'H'
     }, {
-            labels: {format: '{value} °C', style: {color: "#7cb5ec"} },
+            labels: {useHTML:true, format: '{value} &deg;C', style: {color: "#39a684"} },
             title: {
-                text: 'Temperatur [°C]',
-				style: {color: "#7cb5ec"}
+				useHTML:true, 
+				text: 'Temperatur [&deg;C]',
+				style: {color: "#39a684"}
             },
+			allowDecimals: false,
             opposite: false,
             id: 'T'
     }],
@@ -312,8 +321,22 @@ $(document).ready(function()
             includeInCSVExport: false
         }
 		},    
-    series: []
-    //series: [{data:[[getChartDate("2017-03-01T00:32:40Z"),75]]}]      
+	series: []
+	//series: [{},{},{}]
+	/*
+	series: [{
+		zones: [{
+            value: 33,
+            color: '#7cb5ec'
+        }, {
+            value: 36,
+            color: '#7cb5ec'
+        }, {
+            color: '#7cb5ec'
+        }]
+	}]
+	*/
+	//series: [{data:[[getChartDate("2017-03-01T00:32:40Z"),75]]}]      
 	};
 
 	// add all Channel data to the chart
