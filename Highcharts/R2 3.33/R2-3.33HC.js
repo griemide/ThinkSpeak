@@ -184,6 +184,11 @@ $(document).ready(function()
 				}
 			}
 		},
+		credits: {
+			enabled: true,
+			href: 'https://thingspeak.com/channels/263535',
+			text: 'source: ThingSpeak channel R2 3.33 (263535)'
+		},
 		rangeSelector: {
 			buttons: [{
 				count: 30,
@@ -217,7 +222,7 @@ $(document).ready(function()
 			selected: 4  //Change to 4th button as default
 		},
     title: {
-			text: ''
+			text: 'PM20080'
 		},
 		plotOptions: {
 		  line: {
@@ -265,15 +270,20 @@ $(document).ready(function()
 			}
 		},
 		yAxis: [{
-            title: {
-                text: 'rel. Luftfeuchtigkeit'
+            labels: {format: '{value} °C', style: {color: "#434348"} },
+			title: {
+                text: 'rel. Luftfeuchtigkeit [rF%]',
+				//style: {color: "#7cb5ec"}
+				style: {color: "#434348"}
             },
             id: 'R'
     }, {
+            labels: {format: '{value} °C', style: {color: "#7cb5ec"} },
             title: {
-                text: 'Temperatur'
+                text: 'Temperatur [°C]',
+				style: {color: "#7cb5ec"}
             },
-            opposite: true,
+            opposite: false,
             id: 'C'
     }],
 		exporting: {
