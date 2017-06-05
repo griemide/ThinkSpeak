@@ -2,24 +2,32 @@
 Script:   R2-3.33HC.js
 Author:   Michael Gries (c)2017
 Creation: 2017-05-28
-Modified: 2017-05-29
+Modified: 2017-06-05
+*/
+
+/* 
+Highsoft homepage: https://www.highcharts.com/
+Highstock API Reference: http://api.highcharts.com/highstock/
+Highchart example using jsfiddle: http://jsfiddle.net/calculathor/oLp97nd1/
 */
     
 // Webpage Javascript to chart multiple ThingSpeak channels on two axis with navigator, load historical data, and export cvs data.
 // Public Domain, by turgo.
-// The charting library is called HighStock.  It is awesome!  HighSoft, the owners say, 
-// "Do you want to use Highstock for a personal or non-profit project? 
-//     Then you can use Highchcarts for free under the 
+// The charting library is called HighStock.  
 // Creative Commons Attribution-NonCommercial 3.0 License. "
 // source reference: http://forum.arduino.cc/index.php?topic=213058.msg1560990#msg1560990
+
+var thingSpeakChannel = 263535;
+var thingSpeakChannelName = 'R2 3.33';
+var field1color = '#39a684';
+var field2color = '#9c416b';
+
 var dynamicChart;
 var channelsLoaded = 0;
 // put your ThingSpeak Channel#, Channel Name, and API keys here.
 // fieldList shows which field you want to load, and which axis to display that field on, 
-
 var channelKeys =[];
-
-channelKeys.push({channelNumber:263535, name:'R2 3.33',key:'', 
+channelKeys.push({channelNumber:thingSpeakChannel, name:thingSpeakChannelName,key:'', 
    fieldList:[{field:2,axis:'T'},{field:1,axis:'H'}]});
     
 // user's timezone offset
@@ -33,7 +41,8 @@ function getChartDate(d) {
     return Date.UTC(d.substring(0,4), d.substring(5,7)-1, d.substring(8,10), d.substring(11,13), d.substring(14,16), d.substring(17,19)) - (myOffset * 60000);
 }
 
-      // Hide all series, via 'Hide All' button.  Then user can click on serries name in legent to show series of interest.      
+// Hide all series, via 'Hide All' button.  
+// Then user can click on series name in legend to show series of interest.      
 function HideAll(){
   for (var index=0; index<dynamicChart.series.length; index++)  // iterate through each series
   { 
@@ -42,13 +51,10 @@ function HideAll(){
     dynamicChart.series[index].hide();
     //window.console && console.log('Series Number:',index,' Name:',dynamicChart.series[index].name);
   }
-  //});
-            
-}
+ }
       
 //  This is where the chart is generated.
-$(document).ready(function() 
-{
+$(document).ready(function() {
  //Add Channel Load Menu
  var menu=document.getElementById("Channel Select");
  for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
@@ -84,10 +90,10 @@ $(document).ready(function()
    var fieldList= sentFieldList;
    var channelIndex = sentChannelIndex;
    // get the Channel data with a webservice call
- 	$.getJSON('https://www.thingspeak.com/channels/'+channelNumber+'/feed.json?callback=?&amp;offset=0&amp;results=672;key='+key, function(data) 
+    $.getJSON('https://www.thingspeak.com/channels/'+channelNumber+'/feed.json?callback=?&amp;offset=0&amp;results=672;key='+key, function(data) 
    {
-	   // if no access
-	   if (data == '-1') {
+       // if no access
+       if (data == '-1') {
        $('#chart-container').append('This channel is not public.  To embed charts, the channel must be public or a read key must be specified.');
        window.console && console.log('Thingspeak Data Loading Error');
      }
@@ -98,41 +104,40 @@ $(document).ready(function()
        {
          var p = []//new Highcharts.Point();
          var fieldStr = "data.feeds["+h+"].field"+fieldList[fieldIndex].field;
-		  	 var v = eval(fieldStr);
- 		  	p[0] = getChartDate(data.feeds[h].created_at);
-	 	  	p[1] = parseFloat(v);
-	 	  	// if a numerical value exists add it
-	   		if (!isNaN(parseInt(v))) { fieldList[fieldIndex].data.push(p); }
+             var v = eval(fieldStr);
+            p[0] = getChartDate(data.feeds[h].created_at);
+            p[1] = parseFloat(v);
+            // if a numerical value exists add it
+            if (!isNaN(parseInt(v))) { fieldList[fieldIndex].data.push(p); }
        }
        fieldList[fieldIndex].name = eval("data.channel.field"+fieldList[fieldIndex].field);
-	   }
+       }
      window.console && console.log('getJSON field name:',fieldList[0].name);
      channelKeys[channelIndex].fieldList=fieldList;
      channelKeys[channelIndex].loaded=true;
      channelsLoaded++;
      window.console && console.log('channels Loaded:',channelsLoaded);
      window.console && console.log('channel index:',channelIndex);
-     if (channelsLoaded==channelKeys.length){createChart();}
-	 })
+    if (channelsLoaded==channelKeys.length){createChart();}
+     })
    .fail(function() { alert('getJSON request failed! '); });
  }
+ 
  // create the chart when all data is loaded
  function createChart() {
-	// specify the chart options
-	var chartOptions = {
-	  chart: 
-    {
-		renderTo: 'chart-container',
-		zoomType:'y',
-		events: 
-		{
-			load: function() 
-			{
-				if ('true' === 'true' && (''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1)) 
-				{
-					// If the update checkbox is checked, get latest data every 15 seconds and add it to the chart
-					setInterval(function() 
-					{
+    // specify the chart options
+    var chartOptions = {
+    chart: {
+        renderTo: 'chart-container',
+        zoomType:'y',
+        events: {
+            load: function() 
+            {
+                if ('true' === 'true' && (''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1 && ''.length < 1)) 
+                {
+                    // If the update checkbox is checked, get latest data every 15 seconds and add it to the chart
+                    setInterval(function() 
+                    {
              if (document.getElementById("Update").checked)
              {
               for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
@@ -176,156 +181,148 @@ $(document).ready(function()
                })(channelIndex);
               }
              }
-						}, 15000);
-					}
-				}
-			}
-		},
-		// default colors used by Highstoch release 5.x
-		// colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
-		// modified colors for R2.33
-		colors: ['#39a684', '#9c416b', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
-		credits: {
-			enabled: true,
-			href: 'https://thingspeak.com/channels/263535',
-			text: 'source: ThingSpeak channel R2 3.33 (263535) supported by Highchart.com'
-		},
-		rangeSelector: {
-			buttons: [
-			/*
-			{
-				count: 30,
-				type: 'minute',
-				text: '30m'
-			},
-			*/
-			{
-				count: 12,
-				type: 'hour',
-				text: '12h'
-			}, {
-				count: 1,
-				type: 'day',
-				text: 'D'
-			}, {
-				count: 1,
-				type: 'week',
-				text: 'W'
-			}, {
-				count: 1,
-				type: 'month',
-				text: 'M'
-			}, {
-				count: 1,
-				type: 'year',
-				text: 'Y'
-			}, {
-				type: 'all',
-				text: 'All'
-			}],
-			inputEnabled: true,
-			selected: 4  //Change to 4th button as default
-		},
-		title: {
-			useHTML:true, 
-			text: 'PM20080 (SN: 01692299 906)'
-		},
-		subtitle: {
-			useHTML:true, 
-			text: 'Langzeitmessung B&uuml;roraum R2.3.33 (31 Tage)'
-		},
-		plotOptions: {
-			line: {
-				gapSize:5
-				//color: '#d62020'
-				//  },
-				//  bar: {
-				//color: '#d52020'
-				//  },
-				//  column: {
-			},
-			series: {
-				marker: {radius: 2},
-				animation: true,
-				step: false,
-				turboThreshold:1000,
-				borderWidth: 0
-				/*
-				,
-				zones: [
-					{value: 22, color: 'red'},
-					{value: 33, color: '#f7a35c'},
-					{           color: 'blue'}
-				]
-				*/
-			},
-		},
-    tooltip: {
-      valueDecimals: 1,
-      valueSuffix: '',
-      xDateFormat:'%y-%m-%d<br/>%H:%M:%S %p' //bug fix
-
-
-			// reformat the tooltips so that local times are displayed
-			//formatter: function() {
-      //var d = new Date(this.x + (myOffset*60000));
-      //var n = (this.point.name === undefined) ? '' : '<br/>' + this.point.name;
-      //return this.series.name + ':<b>' + this.y + '</b>' + n + '<br/>' + d.toDateString() + '<br/>' + d.toTimeString().replace(/\(.*\)/, "");
-			//}
+                        }, 15000);
+                    }
+                }
+            }
     },
-	xAxis: {
-		type: 'datetime',
-		ordinal:false,
-		min: Date.UTC(2017,03,01),
-			dateTimeLabelFormats : {
-        hour: '%l %p',
-        minute: '%l:%M %p'
+    // default colors used by Highstoch release 5.x
+    // colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+    // modified colors for used ThingSpeak channel :
+    colors: [field1color, field2color, '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+    credits: {
+        enabled: true,
+        href: 'https://thingspeak.com/channels/263535',
+        text: 'source: ThingSpeak channel R2 3.33 (263535) supported by Highchart.com'
+    },
+    rangeSelector: {
+        buttons: [
+        /*
+        {
+            count: 30,
+            type: 'minute',
+            text: '30m'
+        },
+        */
+        {
+            count: 12,
+            type: 'hour',
+            text: '12h'
+        }, {
+            count: 1,
+            type: 'day',
+            text: 'D'
+        }, {
+            count: 1,
+            type: 'week',
+            text: 'W'
+        }, {
+            count: 1,
+            type: 'month',
+            text: 'M'
+        }, {
+            count: 1,
+            type: 'year',
+            text: 'Y'
+        }, {
+            type: 'all',
+            text: 'All'
+        }],
+        inputEnabled: true,
+        selected: 4  //Change to 4th button as default
     },
     title: {
-        text: 'LeftAxis'
-			}
-		},
-		yAxis: [{
-            labels: {format: '{value} rF%', style: {color: "#9c416b"} },
-			title: {
-				useHTML:true, 
-				text: 'rel. Luftfeuchtigkeit [rF%]',
-				style: {color: "#9c416b"}
-            },
-			allowDecimals: false,
-			offset: 50,
-            id: 'H'
-    }, {
-            labels: {useHTML:true, format: '{value} &deg;C', style: {color: "#39a684"} },
-            title: {
-				useHTML:true, 
-				text: 'Temperatur [&deg;C]',
-				style: {color: "#39a684"}
-            },
-			allowDecimals: false,
-            opposite: false,
-            id: 'T'
+        useHTML:true, 
+        text: 'PM20080 (SN: 01692299 906)'
+    },
+    subtitle: {
+        useHTML:true, 
+        text: 'Langzeitmessung B&uuml;roraum R2.3.33 (31 Tage)'
+    },
+    plotOptions: {
+        line: {
+            gapSize:5
+            //color: '#d62020'
+            //  },
+            //  bar: {
+            //color: '#d52020'
+            //  },
+            //  column: {
+        },
+        series: {
+            marker: {radius: 2},
+            animation: true,
+            step: false,
+            turboThreshold:1000,
+            borderWidth: 0
+            /*
+            ,
+            zones: [
+                {value: 22, color: 'red'},
+                {value: 33, color: '#f7a35c'},
+                {           color: 'blue'}
+            ]
+            */
+        },
+    },
+    tooltip: {
+        valueDecimals: 1,
+        valueSuffix: '',
+        xDateFormat:'%y-%m-%d<br/>%H:%M:%S %p' //bug fix
+        // reformat the tooltips so that local times are displayed
+        //formatter: function() {
+        //var d = new Date(this.x + (myOffset*60000));
+        //var n = (this.point.name === undefined) ? '' : '<br/>' + this.point.name;
+        //return this.series.name + ':<b>' + this.y + '</b>' + n + '<br/>' + d.toDateString() + '<br/>' + d.toTimeString().replace(/\(.*\)/, "");
+        //}
+    },
+    xAxis: {
+        type: 'datetime',
+        ordinal:false,
+        min: Date.UTC(2017,03,01),
+        dateTimeLabelFormats : {
+            hour: '%l %p',
+            minute: '%l:%M %p'
+        },
+        title: {text: 'LeftAxis'}
+    },
+    yAxis: [{
+        labels: {useHTML:true, format: '{value} rF%', style: {color: "#9c416b"} },
+        title: {
+            useHTML:true, 
+            text: 'rel. Luftfeuchtigkeit [rF%]',
+            style: {color: "#9c416b"}
+        },
+        allowDecimals: false,
+        offset: 50,
+        id: 'H'
+        }, {
+        labels: {useHTML:true, format: '{value} &deg;C', style: {color: "#39a684"} },
+        title: {
+            useHTML:true, 
+            text: 'Temperatur [&deg;C]',
+            style: {color: "#39a684"}
+        },
+        allowDecimals: false,
+        opposite: false,
+        id: 'T'
     }],
-		exporting: {
-		  enabled: true,
-      csv: {
-        dateFormat: '%d/%m/%Y %I:%M:%S %p'
+    exporting: {
+        enabled: true,
+        csv: {
+            dateFormat: '%d/%m/%Y %I:%M:%S %p'
         }
-		},
-		legend: {
-		  enabled: true
-		},
+        },
+    legend: {enabled: true},
     navigator: {
-      baseSeries: 0,  //select which series to show in history navigator, First series is 0
-      series: {
-            includeInCSVExport: false
-        }
-		},    
-	series: []
-	//series: [{},{},{}]
-	/*
-	series: [{
-		zones: [{
+        baseSeries: 0,  //select which series to show in history navigator, First series is 0
+        series: {includeInCSVExport: false}
+    },    
+    series: []
+    //series: [{},{},{}]
+    /*
+    series: [{
+        zones: [{
             value: 33,
             color: '#7cb5ec'
         }, {
@@ -334,12 +331,12 @@ $(document).ready(function()
         }, {
             color: '#7cb5ec'
         }]
-	}]
-	*/
-	//series: [{data:[[getChartDate("2017-03-01T00:32:40Z"),75]]}]      
-	};
+    }]
+    */
+    //series: [{data:[[getChartDate("2017-03-01T00:32:40Z"),75]]}]      
+    };
 
-	// add all Channel data to the chart
+    // add all Channel data to the chart
   for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
   {
     for (var fieldIndex=0; fieldIndex<channelKeys[channelIndex].fieldList.length; fieldIndex++)  // add each field
@@ -352,11 +349,11 @@ $(document).ready(function()
                               name: channelKeys[channelIndex].fieldList[fieldIndex].name});
     }
   }
-	// set chart labels here so that decoding occurs properly
-	//chartOptions.title.text = data.channel.name;
-	chartOptions.xAxis.title.text = 'Date';
+    // set chart labels here so that decoding occurs properly
+    //chartOptions.title.text = data.channel.name;
+    chartOptions.xAxis.title.text = 'Date';
 
-	// draw the chart
+    // draw the chart
   dynamicChart = new Highcharts.StockChart(chartOptions);
 
   // update series number to account for the navigator series (The historical series at the bottom) which is the first series.
@@ -416,10 +413,10 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
    window.console && console.log('sentChannelIndex:',sentChannelIndex);
    window.console && console.log('numLoads:',numLoads);
    // get the Channel data with a webservice call
- 	$.getJSON('https://www.thingspeak.com/channels/'+channelNumber+'/feed.json?callback=?&amp;offset=0&amp;start=2017-03-01T00:00:00;end='+end+';key='+key, function(data) 
+    $.getJSON('https://www.thingspeak.com/channels/'+channelNumber+'/feed.json?callback=?&amp;offset=0&amp;start=2017-03-01T00:00:00;end='+end+';key='+key, function(data) 
    {
-	   // if no access
-	   if (data == '-1') {
+       // if no access
+       if (data == '-1') {
        $('#chart-container').append('This channel is not public.  To embed charts, the channel must be public or a read key must be specified.');
        window.console && console.log('Thingspeak Data Loading Error');
      }
@@ -430,22 +427,22 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
        {
          var p = []//new Highcharts.Point();
          var fieldStr = "data.feeds["+h+"].field"+fieldList[fieldIndex].field;
-		  	 var v = eval(fieldStr);
- 		  	p[0] = getChartDate(data.feeds[h].created_at);
-	 	  	p[1] = parseFloat(v);
-	 	  	// if a numerical value exists add it
-	   		if (!isNaN(parseInt(v))) { fieldList[fieldIndex].data.push(p); }
+             var v = eval(fieldStr);
+            p[0] = getChartDate(data.feeds[h].created_at);
+            p[1] = parseFloat(v);
+            // if a numerical value exists add it
+            if (!isNaN(parseInt(v))) { fieldList[fieldIndex].data.push(p); }
        }
        fieldList[fieldIndex].data.sort(function(a,b){return a[0]-b[0]});
        dynamicChart.series[fieldList[fieldIndex].series].setData(fieldList[fieldIndex].data,false);
        //dynamicChart.series[fieldList[fieldIndex].series].addPoint(fieldList[fieldIndex].data,false);
        //fieldList[fieldIndex].name = eval("data.channel.field"+fieldList[fieldIndex].field);
        //window.console && console.log('data added to series:',fieldList[fieldIndex].series,fieldList[fieldIndex].data);
-	   }
+       }
      channelKeys[channelIndex].fieldList=fieldList;
      dynamicChart.redraw()
      window.console && console.log('channel index:',channelIndex);
      numLoads++;
      if (numLoads<maxLoads) {loadChannelHistory(channelIndex,channelNumber,key,fieldList,numLoads,maxLoads);}
-	 });
+     });
 }
