@@ -2,7 +2,7 @@
 Script:   VRCmonitorHC.js
 Author:   Michael Gries (c)2017
 Creation: 2017-05-27
-Modified: 2017-06-07
+Modified: 2017-06-08
 */
 
 /* 
@@ -20,9 +20,11 @@ Highchart example using jsfiddle: http://jsfiddle.net/calculathor/oLp97nd1/
 var thingSpeakChannel = 266302;
 var thingSpeakChannelName = 'VRC 410';
 var chartTitle = 'VRC Monitor';
-var chartSubTitle = 'Vailant VKO unit monitoring via VRC 410 controller';
+var chartSubTitle = 'Vaillant iroVIT VKO unit 249/5 monitoring via VRC 410 controller';
 var field1color = 'green';
 var field2color = 'brown';
+var field3color = 'blue';
+var field4color = 'red';
 var fastInitialLoad = 288; // 1 day and 5 minutes each (12*24=288)
 
 var dynamicChart;
@@ -31,7 +33,7 @@ var channelsLoaded = 0;
 // fieldList shows which field you want to load, and which axis to display that field on, 
 var channelKeys =[];
 channelKeys.push({channelNumber:thingSpeakChannel, name:thingSpeakChannelName,key:'', 
-   fieldList:[{field:1,axis:'T'},{field:4,axis:'H'}]});
+   fieldList:[{field:1,axis:'T'},{field:4,axis:'H'},{field:2,axis:'H'},{field:3,axis:'H'}]});
     
 // user's timezone offset
 var myOffset = new Date().getTimezoneOffset();
@@ -192,7 +194,7 @@ $(document).ready(function() {
     // default colors used by Highstoch release 5.x
     // colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
     // modified colors for used ThingSpeak channel :
-    colors: [field1color, field2color, '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+    colors: [field1color, field2color, field3color, field4color, '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
     credits: {
         enabled: true,
         href: 'https://thingspeak.com/channels/' + thingSpeakChannel,
