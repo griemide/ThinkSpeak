@@ -45,9 +45,9 @@ var channelsLoaded = 0;
 var channelKeys =[];
 channelKeys.push({channelNumber:thingSpeakChannel, name:thingSpeakChannelName,key:'', 
    fieldList:[
-	{field:1,axis:'T'},
-	{field:2,axis:'H'},
-	{field:3,axis:'H'}
+    {field:1,axis:'T'},
+    {field:2,axis:'H'},
+    {field:3,axis:'H'}
    ]
 });
     
@@ -332,10 +332,10 @@ $(document).ready(function() {
         series: {includeInCSVExport: true}
     },    
     series: []
-		/*
-		series: [
+        /*
+        series: [
 
-		{
+        {
             type: 'flags',
             name: 'Flags on series',
             data: [{
@@ -348,9 +348,9 @@ $(document).ready(function() {
             onSeries: 'dataseries',
             shape: 'squarepin'
         },
-		*/
-		/*
-		{
+        */
+        /*
+        {
             type: 'flags',
             name: 'Flags on axis',
             data: [{
@@ -362,8 +362,8 @@ $(document).ready(function() {
             }],
             shape: 'squarepin'
         }
-	]
-	*/
+    ]
+    */
 
     //series: [{},{},{}]
     /*
@@ -395,17 +395,17 @@ $(document).ready(function() {
     }
   }
   // added flags only after all series are added due to navigator bar display reasons
-      chartOptions.series.push({	type: 'flags',
-									name: 'Flags on axis',
-									shape: 'squarepin',
-									data: [{
-										x: xAxesFlag1time ,
-										title: xAxesFlag1text
-									}, {
-										x: xAxesFlag2time ,
-										title: xAxesFlag2text
-									}]
-								});
+      chartOptions.series.push({    type: 'flags',
+                                    name: 'Log',
+                                    shape: 'squarepin',
+                                    data: [{
+                                        x: xAxesFlag1time ,
+                                        title: xAxesFlag1text
+                                    }, {
+                                        x: xAxesFlag2time ,
+                                        title: xAxesFlag2text
+                                    }]
+                                });
 
     // set chart labels here so that decoding occurs properly
     //chartOptions.title.text = data.channel.name;
@@ -497,7 +497,7 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
      window.console && console.log('channel index:',channelIndex);
      numLoads++;
      if (numLoads<maxLoads) {loadChannelHistory(channelIndex,channelNumber,key,fieldList,numLoads,maxLoads);
-	   //dynamicChart.showLoading("Loading ended" );
-	 }
+       //dynamicChart.showLoading("Loading ended" );
+     }
      });
 }
