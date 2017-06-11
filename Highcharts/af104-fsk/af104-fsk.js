@@ -2,7 +2,7 @@
 Script:   af104-fsk.js
 Author:   Michael Gries (c)2017
 Creation: 2017-06-10
-Modified: 2017-06-10
+Modified: 2017-06-11
 */
 
 /* 
@@ -20,12 +20,14 @@ Highchart example using jsfiddle: http://jsfiddle.net/calculathor/oLp97nd1/
 var thingSpeakChannel = 261716;
 var thingSpeakChannelName = 'af104-fsk';
 var chartTitle = 'AF104 F&uuml;llstandskontrolle'; // useHTML:true
-var chartSubTitle = 'HC-SR04 ultra sonic '; // useHTML:true
+var chartSubTitle = 'monitoring HC-SR04 ultra sonic sensor on Wemos D1 mini'; // useHTML:true
 var field1color = 'brown';
 var field2color = 'blue';
 var field3color = 'black';
-var field4color = 'red';
 var fastInitialLoad = 240; // 1 day and 6 minutes each (10*24=240)
+var maxLoads = 5; //instead of select box in original code
+var updateChart = true;  // instead of Update checkbox in original code
+var updateChartLatency = 60000 // seconds
 
 var dynamicChart;
 var channelsLoaded = 0;
@@ -33,7 +35,12 @@ var channelsLoaded = 0;
 // fieldList shows which field you want to load, and which axis to display that field on, 
 var channelKeys =[];
 channelKeys.push({channelNumber:thingSpeakChannel, name:thingSpeakChannelName,key:'', 
-   fieldList:[{field:1,axis:'T'},{field:4,axis:'H'},{field:2,axis:'H'},{field:3,axis:'H'}]});
+   fieldList:[
+	{field:1,axis:'T'},
+	{field:2,axis:'H'},
+	{field:3,axis:'H'}
+   ]
+});
     
 // user's timezone offset
 var myOffset = new Date().getTimezoneOffset();
@@ -46,18 +53,7 @@ function getChartDate(d) {
     return Date.UTC(d.substring(0,4), d.substring(5,7)-1, d.substring(8,10), d.substring(11,13), d.substring(14,16), d.substring(17,19)) - (myOffset * 60000);
 }
 
-// Hide all series, via 'Hide All' button.  
-// Then user can click on series name in legend to show series of interest.      
-function HideAll(){
-  for (var index=0; index<dynamicChart.series.length; index++)  // iterate through each series
-  { 
-    if (dynamicChart.series[index].name == 'Navigator')
-      continue;
-    dynamicChart.series[index].hide();
-    //window.console && console.log('Series Number:',index,' Name:',dynamicChart.series[index].name);
-  }
- }
-      
+     
 //  This is where the chart is generated.
 $(document).ready(function() {
  //Add Channel Load Menu
@@ -66,7 +62,7 @@ $(document).ready(function() {
  {
    window.console && console.log('Name',channelKeys[channelIndex].name);
    var menuOption =new Option(channelKeys[channelIndex].name,channelIndex);
-   menu.options.add(menuOption,channelIndex);
+   //menu.options.add(menuOption,channelIndex);
  }
  var last_date; // variable for the last date added to the chart
  window.console && console.log('Testing console');
@@ -143,7 +139,8 @@ $(document).ready(function() {
                     // If the update checkbox is checked, get latest data every 15 seconds and add it to the chart
                     setInterval(function() 
                     {
-             if (document.getElementById("Update").checked)
+             //if (document.getElementById("Update").checked)
+             if (updateChart) // changed 17.6.11
              {
               for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
               {  
@@ -186,7 +183,7 @@ $(document).ready(function() {
                })(channelIndex);
               }
              }
-                        }, 15000);
+                        }, updateChartLatency);
                     }
                 }
             }
@@ -194,7 +191,7 @@ $(document).ready(function() {
     // default colors used by Highstoch release 5.x
     // colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
     // modified colors for used ThingSpeak channel :
-    colors: [field1color, field2color, field3color, field4color, '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+    colors: [field1color, field2color, field3color, '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
     credits: {
         enabled: true,
         href: 'https://thingspeak.com/channels/' + thingSpeakChannel,
@@ -202,13 +199,13 @@ $(document).ready(function() {
     },
     rangeSelector: {
         buttons: [
-        /*
+        // /*
         {
             count: 30,
             type: 'minute',
             text: '30m'
         },
-        */
+        // */
         {
             count: 12,
             type: 'hour',
@@ -234,7 +231,7 @@ $(document).ready(function() {
             text: 'All'
         }],
         inputEnabled: true,
-        selected: 4  //Change to 4th button as default
+        selected: 2  //Change to 4th button as default
     },
     title: {
         useHTML:true, 
@@ -282,35 +279,37 @@ $(document).ready(function() {
         //}
     },
     xAxis: {
+        title: {text: 'LeftAxis'},
         type: 'datetime',
         ordinal:false,
         min: Date.UTC(2017,03,01),
         dateTimeLabelFormats : {
-            hour: '%l %p',
-            minute: '%l:%M %p'
-        },
-        title: {text: 'LeftAxis'}
+            // hour: '%l %p',
+            // minute: '%l:%M %p'
+            hour: '%H:%M',
+            minute: '%H:%M:%S'
+        }
     },
     yAxis: [{
-        labels: {useHTML:true, format: '{value} &deg;C', style: {color: field2color} },
+        labels: {useHTML:true, format: '{value}', style: {color: field1color} },
         title: {
             useHTML:true, 
-            text: 'Temperatur [&deg;C]',
-            style: {color: field2color}
-        },
-        allowDecimals: false,
-        offset: 50,
-        id: 'H'
-        }, {
-        labels: {useHTML:true, format: '{value} &deg;C', style: {color: field1color} },
-        title: {
-            useHTML:true, 
-            text: 'Temperatur [&deg;C]',
+            text: 'RSSI [dBm]',
             style: {color: field1color}
         },
         allowDecimals: false,
+        offset: 30,
         opposite: false,
         id: 'T'
+        }, {
+        labels: {useHTML:true, format: '{value}', style: {color: field3color} },
+        title: {
+            useHTML:true, 
+            text: 'sonar [cm] / Free heap',
+            style: {color: field3color}
+        },
+        allowDecimals: false,
+        id: 'H'
     }],
     exporting: {
         enabled: true,
@@ -374,9 +373,12 @@ $(document).ready(function() {
         }
       }
     }
-  }          
+  }      
+
+  //dynamicChart.series[0].hide(); //changed 17.6.11
+  
   // add all history
-  //dynamicChart.showLoading("Loading History..." );
+  // dynamicChart.showLoading("Loading History..." );
   window.console && console.log('Channels: ',channelKeys.length);
   for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
   {
@@ -390,15 +392,7 @@ $(document).ready(function() {
   }
  }
 });
-      
-function loadOneChannel(){ 
-  // load a channel selected in the popUp menu.
-  var selectedChannel=document.getElementById("Channel Select");
-  var maxLoads=document.getElementById("Loads").value ;
-  var channelIndex = selectedChannel.selectedIndex;
-  loadChannelHistory(channelIndex,channelKeys[channelIndex].channelNumber,channelKeys[channelIndex].key,channelKeys[channelIndex].fieldList,0,maxLoads); 
-} 
-
+ 
 // load next 8000 points from a ThingSpeak channel and addPoints to a series
 function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sentNumLoads,maxLoads) {
    var numLoads=sentNumLoads
@@ -448,6 +442,8 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
      dynamicChart.redraw()
      window.console && console.log('channel index:',channelIndex);
      numLoads++;
-     if (numLoads<maxLoads) {loadChannelHistory(channelIndex,channelNumber,key,fieldList,numLoads,maxLoads);}
+     if (numLoads<maxLoads) {loadChannelHistory(channelIndex,channelNumber,key,fieldList,numLoads,maxLoads);
+	   //dynamicChart.showLoading("Loading ended" );
+	 }
      });
 }
