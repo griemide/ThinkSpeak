@@ -20,7 +20,7 @@ Highchart example using jsfiddle: http://jsfiddle.net/calculathor/oLp97nd1/
 var thingSpeakChannel = 261716;
 var thingSpeakChannelName = 'af104-fsk';
 var chartTitle = 'AF104 F&uuml;llstandskontrolle'; // useHTML:true
-var chartSubTitle = 'monitoring HC-SR04 ultra sonic sensor on Wemos D1 mini'; // useHTML:true
+var chartSubTitle = 'monitoring HC-SR04 ultrasonic sensor on Wemos D1 mini'; // useHTML:true
 var field1color = 'brown';
 var field2color = 'blue';
 var field3color = 'black';
@@ -28,6 +28,15 @@ var fastInitialLoad = 240; // 1 day and 6 minutes each (10*24=240)
 var maxLoads = 5; //instead of select box in original code
 var updateChart = true;  // instead of Update checkbox in original code
 var updateChartLatency = 60000 // seconds
+
+// https://www.epochconverter.com/
+var xAxesFlag1time = 1496268000000;
+var xAxesFlag1text = 'newBatt';
+var xAxesFlag2time = 1496606400000;
+var xAxesFlag2text = 'newBatt';
+
+//var lastDate = data[data.length - 1][0],  // Get year of last data point
+//   days = 24 * 36e5; // Milliseconds in a day
 
 var dynamicChart;
 var channelsLoaded = 0;
@@ -191,7 +200,7 @@ $(document).ready(function() {
     // default colors used by Highstoch release 5.x
     // colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
     // modified colors for used ThingSpeak channel :
-    colors: [field1color, field2color, field3color, '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+    colors: [field1color, field1color, field2color, field3color, '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
     credits: {
         enabled: true,
         href: 'https://thingspeak.com/channels/' + thingSpeakChannel,
@@ -323,6 +332,39 @@ $(document).ready(function() {
         series: {includeInCSVExport: true}
     },    
     series: []
+		/*
+		series: [
+
+		{
+            type: 'flags',
+            name: 'Flags on series',
+            data: [{
+                x: xAxesFlag1time ,
+                title: xAxesFlag1text
+            }, {
+                x: xAxesFlag2time ,
+                title: xAxesFlag2text
+            }],
+            onSeries: 'dataseries',
+            shape: 'squarepin'
+        },
+		*/
+		/*
+		{
+            type: 'flags',
+            name: 'Flags on axis',
+            data: [{
+                x: xAxesFlag1time ,
+                title: xAxesFlag1text
+            }, {
+                x: xAxesFlag2time ,
+                title: xAxesFlag2text
+            }],
+            shape: 'squarepin'
+        }
+	]
+	*/
+
     //series: [{},{},{}]
     /*
     series: [{
@@ -346,13 +388,25 @@ $(document).ready(function() {
     for (var fieldIndex=0; fieldIndex<channelKeys[channelIndex].fieldList.length; fieldIndex++)  // add each field
     {
       window.console && console.log('Channel '+channelIndex+' field '+fieldIndex);
-      chartOptions.series.push({data:channelKeys[channelIndex].fieldList[fieldIndex].data,
+      chartOptions.series.push({data: channelKeys[channelIndex].fieldList[fieldIndex].data,
                                 index:channelKeys[channelIndex].fieldList[fieldIndex].series,
                                 yAxis:channelKeys[channelIndex].fieldList[fieldIndex].axis,
-                                //visible:false,
-                              name: channelKeys[channelIndex].fieldList[fieldIndex].name});
+                                name: channelKeys[channelIndex].fieldList[fieldIndex].name});
     }
   }
+  // added flags only after all series are added due to navigator bar display reasons
+      chartOptions.series.push({	type: 'flags',
+									name: 'Flags on axis',
+									shape: 'squarepin',
+									data: [{
+										x: xAxesFlag1time ,
+										title: xAxesFlag1text
+									}, {
+										x: xAxesFlag2time ,
+										title: xAxesFlag2text
+									}]
+								});
+
     // set chart labels here so that decoding occurs properly
     //chartOptions.title.text = data.channel.name;
     chartOptions.xAxis.title.text = 'Date';
