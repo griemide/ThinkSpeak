@@ -1,14 +1,29 @@
 % af104-rkz cbm - get latest quantity of used water [liter]
 
-author = 'M. Gries'; author
-version = '17.7.12'; version
+% references:
+% https://de.mathworks.com/help/matlab/functionlist.html
+% https://de.mathworks.com/help/thingspeak/matlab-analysis-and-visualization.html
+
+author = 'M. Gries'; author   % print
+version = '17.7.13'; version  % print
 
 readChannelID = 296355;
-FieldID = 1;
+FieldID1 = 1; % Liter
+FieldID2 = 2; % D1 Pulses
 
-liter = thingSpeakRead(readChannelID, 'Fields', FieldID, 'NumPoints', 1); 
-
+liter = thingSpeakRead(readChannelID, 'Fields', FieldID1, 'NumPoints', 1); 
 display(liter);
+pulses = thingSpeakRead(readChannelID, 'Fields', FieldID2, 'NumMinutes', 1*60); 
+display(pulses);
+PulsesLastHour = numel(pulses); display(PulsesLastHour); whos PulsesLastHour
+
+datetimeStop = dateshift(datetime('now'),'start','hour');
+datetimeStart = dateshift(datetime('now'),'start','hour') - hours(6);
+data = thingSpeakRead(readChannelID,...
+                      'DateRange',[datetimeStart,datetimeStop],...
+                      'Fields',1,'outputFormat','timetable'); 
+dataHourly = retime(data,'hourly','max');
+display(dataHourly);
 
 UOM = 'Liter';
 
@@ -16,12 +31,42 @@ UOM = 'Liter';
 r = hex2dec('31')/255;
 g = hex2dec('7d')/255;
 b = hex2dec('b5')/255;
-textColor = [r g b]; 
+textColorLastHour= [r g b]; 
+
+% Channel color used in channel field config window: 'blue'
+r = 0/255;
+g = 0/255;
+b = 255/255;
+textColorLiter = [r g b]; 
+
+% use decimal values if pipette fuction used in windows paint app
+r = 165/255;
+g = 40/255;
+b = 41/255;
+textColorNote = [r g b];
 
 annotation('textbox',[0.0 0.2 0.9 0.6],...
  'HorizontalAlignment','right',...
  'VerticalAlignment','middle',...
  'LineStyle','none',...
  'String',[num2str(liter) ' ' UOM],...
- 'Color',textColor,...
+ 'Color',textColorLiter,...
  'FontSize',72);
+ 
+annotation('textbox',[0.0 0.0 0.9 0.6],...
+ 'FontName','FixedWidth',...
+ 'HorizontalAlignment','right',...
+ 'VerticalAlignment','middle',...
+ 'LineStyle','none',...
+ 'String',[num2str(PulsesLastHour) ' ' UOM ' in last hour'],...
+ 'Color',textColorLastHour,...
+ 'FontSize',28);
+ 
+annotation('textbox',[0.1 0.1 0.8 0.4],...
+ 'FontName','FixedWidth',...
+ 'HorizontalAlignment','right',...
+ 'VerticalAlignment','bottom',...
+ 'LineStyle','none',...
+ 'String','Note:  last NumPoint value used',...
+ 'Color','0.5 0.5 0.5',...
+ 'FontSize',12);
