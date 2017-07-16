@@ -3,6 +3,7 @@
 % references:
 % https://de.mathworks.com/help/matlab/examples/creating-plots-with-two-y-axes.html
 % https://thingspeak.com/apps/matlab_visualizations
+% https://de.mathworks.com/help/matlab/ref/area-properties.html
 
 author = 'M. Gries'; author   % print
 version = '17.7.16'; version  % print
@@ -15,7 +16,7 @@ PLOT_BOTH  = PLOT_LEFT & PLOT_RIGHT;
 readChannelID = 296355;
 FieldID1 = 1; % Liter
 FieldID2 = 2; % D1 Pulses
-Minutes = 24*60; % range
+Minutes = 2*60; % range
 
 % ThingSpeak 'brown'
 r = 165/255;
@@ -23,7 +24,7 @@ g = 40/255;
 b = 41/255;
 FaceColor = [r g b];
 
-liter  = thingSpeakRead(readChannelID, 'Fields', FieldID1, 'NumMinutes',Minutes); 
+liter  = thingSpeakRead(readChannelID, 'Fields', FieldID1, 'NumMinutes', Minutes); 
 pulses = thingSpeakRead(readChannelID, 'Fields', FieldID2, 'NumMinutes', Minutes); 
 if OUTPUT
     display(PLOT_BOTH);
@@ -48,9 +49,9 @@ if PLOT_BOTH
 end
 
 if PLOT_RIGHT
-    bar(pulses,'FaceColor',FaceColor)
+    bar(pulses,'FaceColor',FaceColor,'LineStyle','none')
     yyaxis right
-    plot(pulses)
+    %plot(pulses)
     %ylim([0 2000])
     %xlim([0 100])
 end
