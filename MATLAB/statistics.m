@@ -1,4 +1,11 @@
-% Enter your MATLAB code below
+% statistics
+% used in channel griemide R2 3.33
+
+% M. Gries, 
+% 2017-04-30: creation
+% 2018-02-04: FontSize changed (72 to 52) due to MATLAB visualization changes
+
+% references:
 % http://www.mathworks.com/help/matlab/ref/annotationtextbox-properties.html
 
 configurationTemp = thingSpeakRead(265494, 'Fields', 1, 'NumPoints', 192);
@@ -20,7 +27,7 @@ annotation('textbox',[0.0 0.2 0.9 0.6],...
  'LineStyle','none',...
  'String',[num2str(meanTemp,3) '°C'],...
  'Color','0.224 0.651 0.518',...
- 'FontSize',72);
+ 'FontSize',52);
  
 annotation('textbox',[0.0 0.0 0.9 0.6],...
  'FontName','FixedWidth',...
