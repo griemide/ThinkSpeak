@@ -1,3 +1,5 @@
 # af104-fsk
 
-![Highstock chart](af104-fsk.gif)
+__Latest screenshot:__
+
+![Highstock chart 2018-03-17](/Highcharts/af104-fsk/images/af104-fsk.2018-03-17.gif)
