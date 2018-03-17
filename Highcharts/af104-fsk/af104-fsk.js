@@ -2,7 +2,10 @@
 Script:   af104-fsk.js
 Author:   Michael Gries (c)2017
 Creation: 2017-06-10
-Modified: 2017-06-11
+Modified: 2017-12-21 (oil delivery 1000 litre added)
+Modified: 2018-03-05 (oil order)
+Modified: 2018-03-15 (oil reserve start point added - F28 fault = oil empty )
+Modified: 2018-03-17 (maxLoads handling corrected)
 */
 
 /* 
@@ -25,15 +28,22 @@ var field1color = 'brown';
 var field2color = 'blue';
 var field3color = 'black';
 var fastInitialLoad = 240; // 1 day and 6 minutes each (10*24=240)
-var maxLoads = 5; //instead of select box in original code
+var fastInitialLoad = 1680; // 1 week and 6 minutes each (10*24*7=1680)
+var maxLoads = 9; //instead of select box in original code (maximum is 9)
 var updateChart = true;  // instead of Update checkbox in original code
 var updateChartLatency = 60000 // seconds
 
 // https://www.epochconverter.com/
-var xAxesFlag1time = 1496268000000;
+var xAxesFlag1time = 1496268000000; // Wednesday, 31. May 2017 22:00:00
 var xAxesFlag1text = 'newBatt';
-var xAxesFlag2time = 1496606400000;
+var xAxesFlag2time = 1496606400000; // Sunday, 4. June 2017 20:00:00
 var xAxesFlag2text = 'newBatt';
+var xAxesFlag3time = 1513846800000; // Thursday, 21. December 2017 09:00:00
+var xAxesFlag3text = '1000 L';
+var xAxesFlag4time = 1520240400000; // Monday, 5. March 2018 09:00:00
+var xAxesFlag4text = 'order';
+var xAxesFlag5time = 1521082800000; // Thursday, 15. March 2018 03:00:00
+var xAxesFlag5text = 'reserve';
 
 //var lastDate = data[data.length - 1][0],  // Get year of last data point
 //   days = 24 * 36e5; // Milliseconds in a day
@@ -240,7 +250,7 @@ $(document).ready(function() {
             text: 'All'
         }],
         inputEnabled: true,
-        selected: 2  //Change to 4th button as default
+        selected: 6  //Change to 6th button as default
     },
     title: {
         useHTML:true, 
@@ -398,13 +408,28 @@ $(document).ready(function() {
       chartOptions.series.push({    type: 'flags',
                                     name: 'Log',
                                     shape: 'squarepin',
-                                    data: [{
-                                        x: xAxesFlag1time ,
+                                    data: [
+                                    {
+                                        x:     xAxesFlag1time ,
                                         title: xAxesFlag1text
-                                    }, {
-                                        x: xAxesFlag2time ,
+                                    },
+                                    {
+                                        x:     xAxesFlag2time ,
                                         title: xAxesFlag2text
-                                    }]
+                                    },
+                                    {
+                                        x:     xAxesFlag3time ,
+                                        title: xAxesFlag3text
+                                    },
+                                    {
+                                        x:     xAxesFlag4time ,
+                                        title: xAxesFlag4text
+                                    },
+                                    {
+                                        x:     xAxesFlag5time ,
+                                        title: xAxesFlag5text
+                                    }
+                                    ]
                                 });
 
     // set chart labels here so that decoding occurs properly
@@ -440,7 +465,7 @@ $(document).ready(function() {
     (function(channelIndex)
       {
         //load only 1 set of 8000 points
-        loadChannelHistory(channelIndex,channelKeys[channelIndex].channelNumber,channelKeys[channelIndex].key,channelKeys[channelIndex].fieldList,0,1); 
+        loadChannelHistory(channelIndex,channelKeys[channelIndex].channelNumber,channelKeys[channelIndex].key,channelKeys[channelIndex].fieldList,0,maxLoads); 
       }
     )(channelIndex);
   }
@@ -453,7 +478,7 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
    var fieldList= sentFieldList;
    var channelIndex = sentChannelIndex;
    var first_Date = new Date();
-   if (typeof fieldList[0].data[0] != "undefined") first_Date.setTime(fieldList[0].data[0][0]+7*60*60*1000);//adjust for 7 hour difference from GMT (Zulu time)
+        if (typeof fieldList[0].data[0] != "undefined") first_Date.setTime(fieldList[0].data[0][0]+7*60*60*1000);//adjust for 7 hour difference from GMT (Zulu time)
    else if (typeof fieldList[1].data[0] != "undefined") first_Date.setTime(fieldList[1].data[0][0]+7*60*60*1000);
    else if (typeof fieldList[2].data[0] != "undefined") first_Date.setTime(fieldList[2].data[0][0]+7*60*60*1000);
    else if (typeof fieldList[3].data[0] != "undefined") first_Date.setTime(fieldList[3].data[0][0]+7*60*60*1000);
@@ -461,6 +486,8 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
    else if (typeof fieldList[5].data[0] != "undefined") first_Date.setTime(fieldList[5].data[0][0]+7*60*60*1000);
    else if (typeof fieldList[6].data[0] != "undefined") first_Date.setTime(fieldList[6].data[0][0]+7*60*60*1000);
    else if (typeof fieldList[7].data[0] != "undefined") first_Date.setTime(fieldList[7].data[0][0]+7*60*60*1000);
+   else if (typeof fieldList[8].data[0] != "undefined") first_Date.setTime(fieldList[8].data[0][0]+7*60*60*1000);
+   else if (typeof fieldList[9].data[0] != "undefined") first_Date.setTime(fieldList[9].data[0][0]+7*60*60*1000);
    var end = first_Date.toJSON();
    window.console && console.log('earliest date:',end);
    window.console && console.log('sentChannelIndex:',sentChannelIndex);
