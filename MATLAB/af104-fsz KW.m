@@ -1,7 +1,7 @@
 % af104-fsz KW
 % M. Gries, 
 % 2018-12-03: creation (new)
-% 2018-12-03: calculations based on formulat below
+% 2018-12-04: calculations based on formulat below
 %
 % used channel fields
 % Field 2 =  'S0 pulse duration [ms]'
@@ -10,16 +10,17 @@
 % TicksPerCycle = 400;
 % RedTicksPerCycle = 16; (equals Field 2 value * 1000)
 % CyclesPerKWh = 75;
-% SecPerHour = 3600;
 %
 % Calculation (KW):
-% KW = SecPerKWh / SecPerHour; SecPerKWh = CyclesPerKWh * SecPerCycle;
+% KW = SecPerHour / SecPerKWh; 
+% SecPerKWh = CyclesPerKWh * SecPerCycle;
 % SecPerCycle = 400 * (meanValue(field2) / 1000) / 16;
 % 
 % Example:
 % meanValue(field2) =  1920 [ms]
 % SecPerCycle =  48
 % SecPerKWh = 75 * 48 = 3600
+% SecPerHour = 3600;
 % KW = 3600 / 3600  = 1
 %
 % used MATLAB references
@@ -53,12 +54,12 @@ cleanDataIndexMax = find(cleanDataMin < 15000);
 % Select only elements that are not outliers (HIGH)
 cleanData = cleanDataMin(cleanDataIndexMax);
 
-meanValue = round(mean(cleanData)); meanValue
+meanValue = round(mean(cleanData)); meanValue  % raw data
 
 % meanValue = 1920; % for test purposes only 
 SecPerCycle = 400 * (meanValue / 1000) / 16; SecPerCycle
 SecPerKWh = CyclesPerKWh * SecPerCycle;  SecPerKWh
-KW = SecPerKWh / SecPerHour;  % KW
+KW = SecPerHour / SecPerKWh;  % KW
 W = KW * 1000; 
 W = round(W); W
 
@@ -67,6 +68,7 @@ W = round(W); W
 %
 UOM = 'Watt';
 UOMtyp = [' ' UOM ];
+UOMs0 = [' msec'];
 % use decimal values if pipette fuction used in windows paint app
 r = 165/255;
 g = 40/255;
@@ -80,5 +82,14 @@ annotation('textbox',[0.0 0.2 0.9 0.6],...
  'String',[num2str(W,'%u') UOMtyp],...
  'Color',textColor,...
  'FontSize',52);
+
+annotation('textbox',[0.0 0.0 0.9 0.6],...
+ 'FontName','FixedWidth',...
+ 'HorizontalAlignment','center',...
+ 'VerticalAlignment','bottom',...
+ 'LineStyle','none',...
+ 'String',[num2str(meanValue,'Note: based on reported last pulse width %u') UOMs0],...
+ 'Color','0.5 0.5 0.5',...
+ 'FontSize',10);
 
 % EOF
