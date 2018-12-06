@@ -2,6 +2,7 @@
 % M. Gries, 
 % 2018-12-03: creation (granted from af104-rkz min typ max)
 % 2018-12-03: parameters changed to channel 624220 (af104-fsz)
+% 2018-12-06: statistics changes from 1000 NumPoints to 1 day to fit with histogram)
 %
 % used for channel application af104-fsz min-typ-max values
 % Field 2 =  'S0 pulse duration [ms]'
@@ -10,19 +11,20 @@
 
 channel = 624220;
 fields = 2;
-NumPoints = 1000;
-fieldSamples = thingSpeakRead(channel, 'Fields', fields, 'NumPoints', NumPoints);
+NumPoints = 24*60; % equals 1 day
+fieldSamples = thingSpeakRead(channel, 'Fields', fields, 'NumMinutes', NumPoints);
 
 % Channel color used in channel field config window: #317db5
 % r = hex2dec('31')/255;
 % g = hex2dec('7d')/255;
 % b = hex2dec('b5')/255;
 
-% use decimal values if pipette fuction used in windows paint app
+% use decimal values if pipette function used in windows paint app
 r = 165/255;
 g = 40/255;
 b = 41/255;
-textColor = [r g b]  % print output
+textColor = [r g b]; 
+% display(textColor, 'selected color pattern'); % for test porposes only
 
 % fieldSamples array may contain Not A Number (NaN) values
 % function mean will result in a NaN result if array contain one or more NaN
@@ -40,6 +42,7 @@ cleanDataMin = fieldSamples(cleanDataIndexMin);
 cleanDataIndexMax = find(cleanDataMin < 15000);
 % Select only elements that are not outliers (HIGH)
 cleanData = cleanDataMin(cleanDataIndexMax);
+display(numel(cleanData), 'Number of pulses after cleaning');
 
 maxValue = max(cleanData);
 meanValue = round(mean(cleanData));
@@ -84,3 +87,4 @@ annotation('textbox',[0.0 0.0 0.9 0.6],...
  'Color','0.5 0.5 0.5',...
  'FontSize',10);
  
+ % EOF
