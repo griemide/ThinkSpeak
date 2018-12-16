@@ -5,17 +5,17 @@
 
 author   = 'M. Gries'; author
 created  = '18.12.16'; 
-modified = '18.12.16';
-version  = '18.12.16'; version
+modified = '18.12.17';
+version  = '18.12.17'; version
 
 readChannelID = 624220; % af104-fsz
 FieldID = 2;
 histogramTitle = 'Histogram Ferraris Type C114';
-histogramXlabel = 'number of pulses within 24 hours (1 day)';
+histogramXlabel = 'number of pulses within last 24 hours (1 day)';
 histogramYlabel = 'Number of pulses';
-histogramNoOfBins = 50; % e.g. 0 msec until 15000 msec
 
-[pulses, timeStamp] = thingSpeakRead(readChannelID, 'Fields', FieldID, 'NumDays', 1); 
+
+[pulses, timeStamp, chInfo] = thingSpeakRead(readChannelID, 'Fields', FieldID, 'NumDays', 1); 
 
 % Check for outliers (value == 20 defines error flag reporting)
 anyOutliers = sum(pulses < 21);
@@ -33,17 +33,31 @@ else
     cleanTimeStamps = timeStamp;
 end
 
-display(cleanData, 'Cleaned data');
-display(anyOutliers, 'No of outliners');
-display(numel(cleanData), 'No pulses after cleaning');
+cleanTimeStampsHours =  hour(cleanTimeStamps);
+pulsesInTotal = numel(cleanTimeStampsHours);
+
+display(cleanTimeStamps, 'Cleaned time stamps');
+display(cleanTimeStampsHours, 'Cleaned time hours');
+display(anyOutliers, 'Number of outliners');
+display(pulsesInTotal, 'Number pulses after cleaning');
 
 %h = histogram(cleanTimeStamps, histogramNoOfBins, 'BinLimits',[0 15000);
-h = histogram(cleanTimeStamps, 24, 'BinMethod','hour');
+%h = histogram(cleanTimeStamps, 'BinMethod','hour');
+h = histogram(cleanTimeStampsHours,'BinLimits',[-0.5 23.5]);
+% Add title and axis labels
 title(histogramTitle);
 xlabel(histogramXlabel);
+xticks([0 5 11 17 23]);
 ylabel(histogramYlabel);
+% Add a legend
+legendText = [int2str(pulsesInTotal), ' pulses in total'];
+lgd = legend(legendText)
+%lgd.Location = 'best'; % issue for given histogram BinLimits
+lgd.Location = 'northwest';
 grid on
+grid minor
 
-display (h, 'histogram properties');
+display(chInfo, 'ThinkSpeak channel information');
+display(h, 'Used Histogram properties');
 
 % EOF
