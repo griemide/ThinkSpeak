@@ -4,15 +4,15 @@
 % https://de.mathworks.com/help/matlab/ref/matlab.graphics.chart.primitive.histogram.html
 
 author   = 'M. Gries'; author
-created  = '18.12.6'; 
-modified = '18.12.16';
-version  = '18.12.16'; version
+created  = '18.12.6' ; % granted from af104-fsk
+modified = '18.12.17'; % Legend, FaceColor and chInfo added
+version  = '18.12.17'; version % print current version
 
 readChannelID = 624220; % af104-fsz
 FieldID = 2;
 histogramTitle = 'Histogram Ferraris Type C114';
 histogramXlabel = 'pulse width [msec]';
-histogramYlabel = 'Number of pulses';
+histogramYlabel = 'No. of pulses within 1 day';
 % define limits
 histogramBinLowerLimit = 0;
 histogramBinUpperLimit = 14000; % evaluated maximn ist approx 12850 msec
@@ -22,7 +22,7 @@ histogramNoOfBins = (histogramBinUpperLimit-histogramBinLowerLimit)/histogramBin
 % alternative (use BinWidth property)
 histogramBinWidth = 250; 
 
-[pulses, timeStamp] = thingSpeakRead(readChannelID, 'Fields', FieldID, 'NumMinutes', 24*60); 
+[pulses, timeStamp, chInfo] = thingSpeakRead(readChannelID, 'Fields', FieldID, 'NumDays', 1); 
 
 % Check for outliers (value == 20 defines error flag reporting)
 anyOutliers = sum(pulses < 21);
@@ -44,13 +44,22 @@ display(cleanData, 'Cleaned data');
 display(anyOutliers, 'No of outliners');
 display(numel(cleanData), 'No pulses after cleaning');
 
+pulsesInTotal = numel(cleanData);
+
 % h = histogram(cleanData, histogramNoOfBins, 'BinLimits',[0 14000]);
 h = histogram(cleanData, 'BinWidth', histogramBinWidth);
+% Add title and axis labelstitle(histogramTitle);
 title(histogramTitle);
 xlabel(histogramXlabel);
 ylabel(histogramYlabel);
+h.FaceColor = 'red';
+% Add a legend
+legendText = [int2str(pulsesInTotal), ' pulses in total'];
+lgd = legend(legendText)
+lgd.Location = 'best'; 
 grid on
 
+display(chInfo, 'ThinkSpeak channel information');
 display (h, 'histogram properties');
 
 % EOF
