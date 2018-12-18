@@ -5,8 +5,8 @@
 
 author   = 'M. Gries'; author
 created  = '18.12.16'; 
-modified = '18.12.17';
-version  = '18.12.17'; version
+modified = '18.12.18'; % bin range changed from 0..23 to 1.24 (see xticks)
+version  = '18.12.18'; version
 
 readChannelID = 624220; % af104-fsz
 FieldID = 2;
@@ -34,20 +34,22 @@ else
 end
 
 cleanTimeStampsHours =  hour(cleanTimeStamps);
+bins = cleanTimeStampsHours + 1;
 pulsesInTotal = numel(cleanTimeStampsHours);
 
 display(cleanTimeStamps, 'Cleaned time stamps');
-display(cleanTimeStampsHours, 'Cleaned time hours');
+display(cleanTimeStampsHours, 'Cleaned time hours (range  0..23)');
+display(bins, 'Bins (range 1..24)');
 display(anyOutliers, 'Number of outliners');
 display(pulsesInTotal, 'Number pulses after cleaning');
 
 %h = histogram(cleanTimeStamps, histogramNoOfBins, 'BinLimits',[0 15000);
 %h = histogram(cleanTimeStamps, 'BinMethod','hour');
-h = histogram(cleanTimeStampsHours,'BinLimits',[-0.5 23.5]);
+h = histogram(bins,'BinLimits',[0.5 24.5]); % see also xticks
 % Add title and axis labels
 title(histogramTitle);
 xlabel(histogramXlabel);
-xticks([0 5 11 17 23]);
+xticks([1 6 12 18 24]); % according bin limits
 ylabel(histogramYlabel);
 % Add a legend
 legendText = [int2str(pulsesInTotal), ' pulses in total'];
