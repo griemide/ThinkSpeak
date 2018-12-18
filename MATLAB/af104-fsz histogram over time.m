@@ -33,33 +33,63 @@ else
     cleanTimeStamps = timeStamp;
 end
 
+Today = datetime('today');
+rangeToday = timerange(Today,'days');
+Yesterday =  datetime('yesterday');
+rangeYesterday = timerange(Yesterday,'days');
+
+TT =  timetable(cleanTimeStamps, cleanData);
+TTT = TT(rangeToday,:);
+TTY = TT(rangeYesterday,:);
+
 cleanTimeStampsHours =  hour(cleanTimeStamps);
-bins = cleanTimeStampsHours + 1;
+bins1 = cleanTimeStampsHours + 1;
+bins2 = cleanTimeStampsHours + 2;
 pulsesInTotal = numel(cleanTimeStampsHours);
+
 
 display(cleanTimeStamps, 'Cleaned time stamps');
 display(cleanTimeStampsHours, 'Cleaned time hours (range  0..23)');
-display(bins, 'Bins (range 1..24)');
+display(bins1, 'Bins (range 1..24)');
 display(anyOutliers, 'Number of outliners');
 display(pulsesInTotal, 'Number pulses after cleaning');
 
 %h = histogram(cleanTimeStamps, histogramNoOfBins, 'BinLimits',[0 15000);
 %h = histogram(cleanTimeStamps, 'BinMethod','hour');
-h = histogram(bins,'BinLimits',[0.5 24.5]); % see also xticks
-% Add title and axis labels
+h1 = histogram(bins1,'BinLimits',[0.5 24.5]); % see also xticks
+hold on
+h2 = histogram(bins2,'BinLimits',[0.5 24.5]);
+% h2.Normalization = 'probability';
+% h2.BinWidth = 1;
+
+% Add title an%d axis labels
 title(histogramTitle);
 xlabel(histogramXlabel);
 xticks([1 6 12 18 24]); % according bin limits
 ylabel(histogramYlabel);
 % Add a legend
-legendText = [int2str(pulsesInTotal), ' pulses in total'];
-lgd = legend(legendText)
+legend1Text = [int2str(pulsesInTotal), ' pulses in total'];
+legend2Text = [int2str(pulsesInTotal), ' pulses in total'];
+% legendText = [int2str(pulsesInTotal), ' pulses in total'];
+
+lgd = legend(legend1Text, legend2Text)
 %lgd.Location = 'best'; % issue for given histogram BinLimits
 lgd.Location = 'northwest';
 grid on
 grid minor
 
 display(chInfo, 'ThinkSpeak channel information');
-display(h, 'Used Histogram properties');
+display(h1, 'Used Histogram properties (h1)');
+display(h2, 'Used Histogram properties (h2)');
+
+
+Today
+rangeToday
+Yesterday
+rangeYesterday
+whos cleanTimeStamps cleanData
+whos TT TTT TTY
+
+TTY
 
 % EOF
