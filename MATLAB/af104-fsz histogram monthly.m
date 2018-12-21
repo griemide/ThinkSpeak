@@ -12,12 +12,12 @@ version  = '18.12.21'; version
 
 readChannelID = 624220; % af104-fsz
 FieldID = 3; % KWh counter
-histogramTitle = 'Histogram Ferraris Type C114';
+histogramTitle = 'Histogram Ferraris Type C114 (Serial-No. 47630023)';
 histogramXlabel = 'number of KWh within this month (and last)';
 histogramYlabel = 'Number of KWh';
 
 % get Data with corresponding Timestamp and Channel information
-[data,timeStamp,chInfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',5); 
+[data,timeStamp,chInfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',64); 
 display(chInfo, 'ThinkSpeak channel information');
 
 % references to table vs. timetable handling (including NaT and NaN resp.)
@@ -31,24 +31,26 @@ TT = rmmissing(TT);
 whos TT
 head(TT)
 
-Today = datetime('today');
+Today = datetime('today'); Today
 rangeToday = timerange(Today,'days');
-ThisMonth = month(Today);
-rangeThisMonth = timerange(Today, 'months');
-Yesterday =  datetime('yesterday');
-rangeYesterday = timerange(Yesterday,'days');
-LastMonth = ThisMonth - 1;
+ThisMonth = month(Today); ThisMonth
+rangeThisMonth = timerange(Today, 'months'); rangeThisMonth
+Yesterday =  datetime('yesterday'); Yesterday
+rangeYesterday = timerange(Yesterday,'days'); rangeYesterday
+LastMonth = ThisMonth - 1; LastMonth
 % rangeLastMonth = datemnth(Today, -1); requires Financial Toolbox.
-CurrentMonth = datetime('today');
+CurrentMonth = datetime('today'); CurrentMonth
 PreviousMonth = dateshift(CurrentMonth,'start','month','previous');
-rangeLastMonth = timerange(PreviousMonth, 'months');
+rangeLastMonth = timerange(PreviousMonth, 'months'); rangeLastMonth
 
 TTTM = TT(rangeThisMonth,:); % timetable This Month
 TTLM = TT(rangeLastMonth,:); % timetable Last Month
+whos TTTM TTLM 
 
 TTtime = TT.timeStamp;
 TTTMtime = TTTM.timeStamp;
 TTLMtime = TTLM.timeStamp;
+whos TTtime TTTMtime TTLMtime
 
 cleanTimeStampsDays1 =  day(TTTMtime);
 cleanTimeStampsDays2 =  day(TTLMtime);
@@ -81,14 +83,8 @@ grid on
 grid minor
 
 % debugging ...
-Today
-rangeToday
-Yesterday
-rangeYesterday
 tail(TTLM,20)
 head(TTTM,20)
-whos TT TTTM TTLM 
-whos TTtime TTTMtime TTLMtime
 ThisMonth 
 rangeThisMonth
 LastMonth
