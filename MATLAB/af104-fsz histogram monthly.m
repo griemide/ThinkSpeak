@@ -3,8 +3,9 @@
 author   = 'M. Gries'; author
 created  = '18.12.19'; % granted from af104-fsz histogram over time
 modified = '18.12.19'; % field3 evaluation (KWh)
-modified = '18.12.20'; % removind NaN variables in timetable
-version  = '18.12.20'; version
+modified = '18.12.20'; % removing NaN variables in timetable
+modified = '18.12.21'; % changed graph hoursPerDay into DaysPerMonth 
+version  = '18.12.21'; version
 
 % references (af104-fsz histogram over time): 
 % https://thingspeak.com/apps/matlab_visualizations/264686/edit
@@ -12,7 +13,7 @@ version  = '18.12.20'; version
 readChannelID = 624220; % af104-fsz
 FieldID = 3; % KWh counter
 histogramTitle = 'Histogram Ferraris Type C114';
-histogramXlabel = 'number of KWh within last month (and actual)';
+histogramXlabel = 'number of KWh within this month (and last)';
 histogramYlabel = 'Number of KWh';
 
 % get Data with corresponding Timestamp and Channel information
@@ -32,55 +33,66 @@ head(TT)
 
 Today = datetime('today');
 rangeToday = timerange(Today,'days');
+ThisMonth = month(Today);
+rangeThisMonth = timerange(Today, 'months');
 Yesterday =  datetime('yesterday');
 rangeYesterday = timerange(Yesterday,'days');
+LastMonth = ThisMonth - 1;
+% rangeLastMonth = datemnth(Today, -1); requires Financial Toolbox.
+CurrentMonth = datetime('today');
+PreviousMonth = dateshift(CurrentMonth,'start','month','previous');
+rangeLastMonth = timerange(PreviousMonth, 'months');
 
-TTT = TT(rangeToday,:);
-TTY = TT(rangeYesterday,:);
+TTTM = TT(rangeThisMonth,:); % timetable This Month
+TTLM = TT(rangeLastMonth,:); % timetable Last Month
 
 TTtime = TT.timeStamp;
-TTTtime = TTT.timeStamp;
-TTYtime = TTY.timeStamp;
+TTTMtime = TTTM.timeStamp;
+TTLMtime = TTLM.timeStamp;
 
-cleanTimeStampsHours1 =  hour(TTTtime);
-cleanTimeStampsHours2 =  hour(TTYtime);
-bins1 = cleanTimeStampsHours1 + 1; % shift from 0..23 to 1.24 
-bins2 = cleanTimeStampsHours2 + 1; % shift from 0..23 to 1.24 
-pulsesInTotal1 = numel(TTT);
-pulsesInTotal2 = numel(TTY);
+cleanTimeStampsDays1 =  day(TTTMtime);
+cleanTimeStampsDays2 =  day(TTLMtime);
+bins1 = cleanTimeStampsDays1; %  from 1..31 
+bins2 = cleanTimeStampsDays2; %  from 1..31
+KWhInTotal1 = numel(TTTM);
+KWhInTotal2 = numel(TTLM);
 
-display(bins1, 'Bins (range 1..24)');
-display(pulsesInTotal1, 'Number pulses after cleaning');
+display(bins1, 'Bins (range 1..31)');
+display(KWhInTotal1, 'Number KWh after cleaning (This Month)');
 
-h1 = histogram(bins1,'BinLimits',[0.5 24.5]); % see also xticks
+h1 = histogram(bins1,'BinLimits',[0.5 31.5]); % see also xticks
 display(h1, 'Used Histogram properties (h1)');
 hold on
-h2 = histogram(bins2,'BinLimits',[0.5 24.5]); % see also xticks
+h2 = histogram(bins2,'BinLimits',[0.5 31.5]); % see also xticks
 display(h2, 'Used Histogram properties (h2)');
 
 % Add title an%d axis labels
 title(histogramTitle);
 xlabel(histogramXlabel);
-xticks([1 6 12 18 24]); % according bin limits
+xticks([1 5 10 15 20 25 30]); % according bin limits
 ylabel(histogramYlabel);
 % Add a legend
-legend1Text = [int2str(pulsesInTotal1), ' in total (today)'];
-legend2Text = [int2str(pulsesInTotal2), ' in total (yesterday)'];
+legend1Text = [int2str(KWhInTotal1), ' KWh in total (this month)'];
+legend2Text = [int2str(KWhInTotal2), ' KWh in total (last month)'];
 lgd = legend(legend1Text, legend2Text)
-%lgd.Location = 'best'; % issue for given histogram BinLimits
-lgd.Location = 'northwest';
+lgd.Location = 'best'; 
+%lgd.Location = 'northwest';
 grid on
 grid minor
-
 
 % debugging ...
 Today
 rangeToday
 Yesterday
 rangeYesterday
-tail(TTY,20)
-head(TTT,20)
-whos TT TTT TTY 
-whos TTtime TTTtime TTYtime
+tail(TTLM,20)
+head(TTTM,20)
+whos TT TTTM TTLM 
+whos TTtime TTTMtime TTLMtime
+ThisMonth 
+rangeThisMonth
+LastMonth
+rangeLastMonth
+%E = eomday(2018,2)
 
 % EOF
