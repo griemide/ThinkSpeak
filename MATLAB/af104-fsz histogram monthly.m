@@ -12,7 +12,7 @@ version  = '18.12.21'; version
 
 readChannelID = 624220; % af104-fsz
 FieldID = 3; % KWh counter
-histogramTitle = 'Histogram Ferraris Type C114 (Serial-No. 47630023)';
+histogramTitle = 'Histogram Ferraris Type C114  (Serial-No. 47630023)';
 histogramXlabel = 'number of KWh within this month (and last)';
 histogramYlabel = 'Number of KWh';
 
@@ -62,11 +62,13 @@ KWhInTotal2 = numel(TTLM);
 display(bins1, 'Bins (range 1..31)');
 display(KWhInTotal1, 'Number KWh after cleaning (This Month)');
 
-h1 = histogram(bins1,'BinLimits',[0.5 31.5]); % see also xticks
+h1 = histogram(bins1,'BinLimits',[0.5 31.5],'BinMethod','integers'); % see also xticks
 display(h1, 'Used Histogram properties (h1)');
 hold on
-h2 = histogram(bins2,'BinLimits',[0.5 31.5]); % see also xticks
+h2 = histogram(bins2,'BinLimits',[0.5 31.5], 'BinMethod','integers'); % see also xticks
 display(h2, 'Used Histogram properties (h2)');
+
+yAxisHeight =  max(h1.Values) + 1; yAxisHeight
 
 % Add title an%d axis labels
 title(histogramTitle);
@@ -77,8 +79,9 @@ ylabel(histogramYlabel);
 legend1Text = [int2str(KWhInTotal1), ' KWh in total (this month)'];
 legend2Text = [int2str(KWhInTotal2), ' KWh in total (last month)'];
 lgd = legend(legend1Text, legend2Text)
-lgd.Location = 'best'; 
-%lgd.Location = 'northwest';
+%lgd.Location = 'best'; 
+%lgd.Location = 'bestoutside'; 
+lgd.Location = 'southwest';
 grid on
 grid minor
 
@@ -90,5 +93,14 @@ rangeThisMonth
 LastMonth
 rangeLastMonth
 %E = eomday(2018,2)
+
+whos bins1
+whos yAxisHeight
+binsAddon = [yAxisHeight]; binsAddon
+whos binsAddon
+% testbins1 =  cat(2,bins1, binsAddon);
+% testBin = [bins1, yAxisHeight];
+% whos testbins1
+% test = [bins1, 17];
 
 % EOF
