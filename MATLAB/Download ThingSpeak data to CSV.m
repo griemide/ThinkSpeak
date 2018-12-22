@@ -5,7 +5,21 @@ created  = '18.12.22'; % perform multiple downloads due to 8000 points limitatio
 modified = '18.12.22'; % tested with channel af104-fsz
 version  = '18.12.22'; version
 
-% Implemented download strategy
+% Implemented download strategy:
+% { preconditions are: 
+%   - 8000 records maximum per reading
+%   - NaN values in variables
+%   - fixed number of NaN values within on period (e.g. 70 NaN withinh 1 KWh)
+% }
+%  1. get channel Info as chInfo first to evaluate structure
+%  2. get chInfo.Created to determine start date of first reading
+%  3. get chInfo.LastEntryID to determine interartion of the for-loop
+%  4. read first records over whole period i.e. until today
+%  5. remove missing (i.e. NaN) vaiables first before further evaluations
+%  6. determine datetime value of last record which will be next start day
+%  7. determine number of records read 
+
+
 % https://www.mathworks.com/examples/matlab/mw/matlab-ex71355721-export-table-to-text-file
 
 % references (af104-fsz histogram over time): 
@@ -14,21 +28,30 @@ version  = '18.12.22'; version
 readChannelID = 624220; % af104-fsz
 FieldID = 3; % KWh counter
 
+% datasets (NumPoints) are limited to 8000 for a free licence 
+% get Data with corresponding Timestamp and Channel information first
+[data,Timestamps,chInfo] = thingSpeakRead(readChannelID); % recent variables
+display(chInfo, 'ThinkSpeak channel information');
+display(chInfo.Created, 'ThinkSpeak channel earliest possible date');
+display(chInfo.LastEntryID, 'ThinkSpeak channel records in total');
+
 % https://de.mathworks.com/help/thingspeak/thingspeakread.html
 % 'DateRange',[datetime('Aug 8, 2014'),datetime('Aug 12, 2014')]
-DateStart = datetime('Dec 9, 2018');
-DateEnd = datetime('today');
+
+% When you perform operations involving datetime arrays, the arrays either must all have a time zone associated with them, 
+% or they must all have no time zone.
+DateCreated = chInfo.Created; DateCreated
+whos DateCreated
+DateStart = datetime(DateCreated); DateStart
+whos DateStart
+DateEnd = datetime('now','Timezone','local'); DateEnd
+whos DateEnd
 DateRangePeriod = [DateStart, DateEnd]; DateRangePeriod
 
-% datasets (NumPoints) are limited to 8000 for a free licence 
-% get Data with corresponding Timestamp and Channel information
-[data,Timestamps,chInfo] = thingSpeakRead(readChannelID); % recent variables
 % [data,Timestamps,chInfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',64); 
 % [data,Timestamps] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumPoints',8000); 
 % [TT,chinfo] = thingSpeakRead(readChannelID,'DateRange',DateRangePeriod,'Fields',FieldID,'OutputFormat','timetable'); 
 [T,chinfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',64,'OutputFormat','table'); 
-display(chInfo, 'ThinkSpeak channel information');
-display(chInfo.LastEntryID, 'ThinkSpeak channel records in total');
 
 whos T
 T = rmmissing(T);
@@ -50,7 +73,6 @@ U = rmmissing(U);
 whos U
 tail(U)
 head(U)
-
 
 Tsummary = [U;T];
 whos T U 
