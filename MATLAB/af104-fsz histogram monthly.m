@@ -5,7 +5,8 @@ created  = '18.12.19'; % granted from af104-fsz histogram over time
 modified = '18.12.19'; % field3 evaluation (KWh)
 modified = '18.12.20'; % removing NaN variables in timetable
 modified = '18.12.21'; % changed graph hoursPerDay into DaysPerMonth 
-version  = '18.12.21'; version
+modified = '18.12.22'; % DateRange readings added for test purposes 
+version  = '18.12.22'; version
 
 % references (af104-fsz histogram over time): 
 % https://thingspeak.com/apps/matlab_visualizations/264686/edit
@@ -16,15 +17,25 @@ histogramTitle = 'Histogram Ferraris Type C114  (Serial-No. 47630023)';
 histogramXlabel = 'number of KWh within this month (and last)';
 histogramYlabel = 'Number of KWh';
 
+% 'DateRange',[datetime('Aug 8, 2014'),datetime('Aug 12, 2014')]
+DateStart = datetime('Dec 9, 2018');
+DateEnd = datetime('today');
+DateRangePeriod = [DateStart, DateEnd]; DateRangePeriod
+
+% datasets (NumPoints) are limited to 8000 for a free licence 
 % get Data with corresponding Timestamp and Channel information
-[data,timeStamp,chInfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',64); 
+[data,Timestamps,chInfo] = thingSpeakRead(readChannelID); % recent variables
+% [data,Timestamps,chInfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',64); 
+% [data,Timestamps] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumPoints',8000); 
+% [TT,chinfo] = thingSpeakRead(readChannelID,'DateRange',DateRangePeriod,'Fields',FieldID,'OutputFormat','timetable'); 
+[TT,chinfo] = thingSpeakRead(readChannelID,'Fields',FieldID,'NumDays',64,'OutputFormat','timetable'); 
 display(chInfo, 'ThinkSpeak channel information');
 
 % references to table vs. timetable handling (including NaT and NaN resp.)
 % https://de.mathworks.com/help/matlab/examples/preprocess-and-explore-bicycle-count-data-using-timetable.html
 
-% create timetable
-TT = timetable(timeStamp, data);
+% create timetable (if not equivalent output format already used in thingSpeakRead)
+% TT = timetable(timeStamp, data);
 TT.Properties.DimensionNames
 % remove rows with NaN variables
 TT = rmmissing(TT);
@@ -47,9 +58,9 @@ TTTM = TT(rangeThisMonth,:); % timetable This Month
 TTLM = TT(rangeLastMonth,:); % timetable Last Month
 whos TTTM TTLM 
 
-TTtime = TT.timeStamp;
-TTTMtime = TTTM.timeStamp;
-TTLMtime = TTLM.timeStamp;
+TTtime = TT.Timestamps;
+TTTMtime = TTTM.Timestamps;
+TTLMtime = TTLM.Timestamps;
 whos TTtime TTTMtime TTLMtime
 
 cleanTimeStampsDays1 =  day(TTTMtime);
