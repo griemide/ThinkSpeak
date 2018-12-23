@@ -3,7 +3,8 @@
 author   = 'M. Gries'; author
 created  = '18.12.22'; % perform multiple downloads due to 8000 points limitations
 modified = '18.12.23'; % tested with channel af104-fsz
-version  = '18.12.23'; version
+modified = '18.12.24'; % Matlab Online on iPhone and Matlab Drive added (link below)
+version  = '18.12.24'; version
 
 % Implemented download strategy:
 % { preconditions are: 
@@ -94,7 +95,10 @@ Tsummary
 
 % https://www.mathworks.com/examples/matlab/mw/matlab-ex71355721-export-table-to-text-file
 
-%RT = readtable('C:\HC-PP\test.txt');
+
+% https://drive.matlab.com/files/
+
+%RT = readtable('test.txt');
 %whos RT
 %writetable(T,'C:\HC-PP\tabledata.txt');
 %type C:\HC-PP\tabledata.txt
