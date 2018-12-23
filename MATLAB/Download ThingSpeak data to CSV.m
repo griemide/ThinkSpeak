@@ -42,11 +42,14 @@ Periods  = TotalNoOfRecords / MaxRecordsPerRead;
 % ...thinkSpeakRead... 'DateRange',[datetime('Aug 8, 2014'),datetime('Aug 12, 2014')]
 % When you perform operations involving datetime arrays, the arrays either must all have a time zone associated with them, 
 % or they must all have no time zone.
-DateCreated = chInfo.Created; DateCreated
+DateCreated = chInfo.Created + days(27); DateCreated
 whos DateCreated
 DateStart = datetime(DateCreated); DateStart
 whos DateStart
-DateEnd = datetime('now','Timezone','local'); DateEnd
+DateEndPeriod = DateCreated + days(5); DateEndPeriod
+whos DateEndPeriod
+DateEnd = datetime(DateEndPeriod); DateEnd
+%DateEnd = datetime(,'Timezone','local'); DateEnd30
 whos DateEnd
 DateRangePeriod = [DateStart, DateEnd]; DateRangePeriod
 
@@ -59,18 +62,24 @@ whos TT
 TT = rmmissing(TT);
 whos TT
 head(TT)
+tail(TT)
 T1 = TT.Timestamps(1)
 whos T1
+Tmax = numel(TT); Tmax
+Tn = TT.Timestamps(Tmax); Tn
+TT
 
 % https://de.mathworks.com/help/thingspeak/thingspeakread.html
 % 'DateRange',[datetime('Aug 8, 2014'),datetime('Aug 12, 2014')]
 
-DateEnd = datetime(T1);
-DateStart = datetime(T1 - days(5)); DateStart
+DateStart = datetime(Tn,'Timezone','local'); DateStart
+DateEnd = datetime('now','Timezone','local'); DateEnd
+whos DateStart DateEnd
 DateRangePeriod = [DateStart, DateEnd]; DateRangePeriod
 
 [TU,chinfo] = thingSpeakRead(readChannelID,'DateRange',DateRangePeriod,'Fields',FieldID,'OutputFormat','timetable'); 
 
+% https://de.mathworks.com/help/matlab/matlab_prog/clean-timetable-with-missing-duplicate-or-irregular-times.html
 TU = rmmissing(TU);
 whos TU
 tail(TU)
@@ -78,6 +87,8 @@ head(TU)
 
 Tsummary = [TU;TT];
 whos TT TU 
+whos Tsummary
+Tsummary = unique(Tsummary);
 whos Tsummary
 Tsummary
 
