@@ -6,13 +6,16 @@ modified = '18.12.19'; % field3 evaluation (KWh)
 modified = '18.12.20'; % removing NaN variables in timetable
 modified = '18.12.21'; % changed graph hoursPerDay into DaysPerMonth 
 modified = '18.12.22'; % DateRange readings added for test purposes 
-version  = '18.12.22'; version
+modified = '18.12.29'; % changed to channel 662808 (af104-fsk kwh 
+version  = '18.12.29'; version
 
 % references (af104-fsz histogram over time): 
 % https://thingspeak.com/apps/matlab_visualizations/264686/edit
 
-readChannelID = 624220; % af104-fsz
-FieldID = 3; % KWh counter
+% readChannelID = 624220; % af104-fsz
+readChannelID = 662808; % af104-fsz kwh
+% FieldID = 3; % KWh counter
+FieldID = 1; % KWh counter
 histogramTitle = 'Histogram Ferraris Type C114  (Serial-No. 47630023)';
 histogramXlabel = 'number of KWh within this month (and last)';
 histogramYlabel = 'Number of KWh';
