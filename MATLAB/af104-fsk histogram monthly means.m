@@ -97,21 +97,37 @@ tail(TTmean, 64)
 % https://de.mathworks.com/help/matlab/ref/matlab.graphics.chart.primitive.histogram.html?searchHighlight=histogram&s_tid=doc_srchtitle#buhznbh-1
 hold on
 x = BinLimitsRange;
-y = yAxisHeight - 100 - BinLimitsRange; % for test purposes only
-%y = TT2.sonarcm;
+% https://de.mathworks.com/help/matlab/ref/table2array.html?s_tid=doc_ta
+8
+x = [ 1 2 3 4]; x
+y = [77.123 88.134 92.567 102.456];
 
-% modify legend for 'data1' cell string
-% https://de.mathworks.comt/help/matlab/ref/cell.html?searchHighlight=cell&s_tid=doc_srchtitle
-lgd
-C = lgd.String;
-display(C,'current legend');
-C{3} = 'Sonar daily means [cm]';
-display(C,'modified legend');
-% https://de.mathworks.com/help/matlab/ref/string.html?searchHighlight=string&s_tid=doc_srchtitle
-S = string(C)
-lgd.String = {'Legend1' 'Legend2' 'Legend3'}; lgd
-plot(x,y,'Color','red','LineWidth',3.5)
-lgdUpdate = legend(legend1Text, legend2Text, '31 sonar daily means [cm]');
+
+BT = [NaN 77; 7 88; 3 99; 4 95]; 
+BT(2,2) = NaN;
+whos BT
+BT
+
+
+% y = yAxisHeight - 100 - BinLimitsRange; % for test purposes only
+y2 = TT2.sonarcm;
+whos bins1 bins2 x y y2
+x
+y2
+y
+
+
+plot(x,BT,'Color','blue','LineWidth',3.5)
+plot(y2,'Color','red','LineWidth',2.5)
+legend3plot = '31 sonar daily means [cm]';
+legend4plot = '32 sonar daily means [cm]';
+lgdUpdate = legend(legend1Text, legend2Text, legend3plot, legend4plot);
 whos lgdUpdate
+
+
+BTT = [month(TT2.Timestamps) day(TT2.Timestamps) TT2.sonarcm]
+whos BTT
+
+% https://itp.tugraz.at/LV/kernbich/AppSoft-1/appsoft1/node23.html
 
 % EOF
