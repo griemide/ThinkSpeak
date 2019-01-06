@@ -1,12 +1,12 @@
 % af104-fsk histogram monthly means (sonar)
 
 author   = 'M. Gries'; author
-created  = '19.1.5  '; % granted from af104-fsz histogram monthly
-modified = '19.1.5  '; % field3 evaluation (KWh)
-version  = '19.1.5  '; version
+created  = '19.1.5  '; % granted from af104-fsk histogram monthly records
+modified = '19.1.6  '; % field3 evaluation (KWh)
+version  = '19.1.6  '; version
 
-% references (af104-uwz histogram monthly): 
-% https://thingspeak.com/apps/matlab_visualizations/264686/edit
+% references (af104-fsk histogram monthly records): 
+% https://thingspeak.com/apps/matlab_visualizations/xxxxx/edit
 
 readChannelID = 261716; % af104-fsk
 FieldID = 2; % sonar (cm)
@@ -43,16 +43,21 @@ cleanTimeStampsDays1 =  day(DTTM);
 cleanTimeStampsDays2 =  day(DTLM);
 bins1 = cleanTimeStampsDays1; %  from 1..31 
 bins2 = cleanTimeStampsDays2; %  from 1..31
+% display(bins1, 'Bins1 (range 1..31)');
+% display(bins2, 'Bins2 (range 1..31)');
+
+% calculate values for the histogram legend
 Totals1 = numel(TTTM);
 Totals2 = numel(TTLM);
+display(Totals1, 'Number of records after cleaning (This Month)');
+display(Totals2, 'Number of records after cleaning (Last Month)');
 
-% display(bins1, 'Bins (range 1..31)');
-% display(Totals1, 'Number of records after cleaning (This Month)');
+BinLimitsRange = [0.5 31.5];
 
-h1 = histogram(bins1,'BinLimits',[0.5 31.5],'BinMethod','integers'); % see also xticks
+h1 = histogram(bins1,'BinLimits',BinLimitsRange,'BinMethod','integers'); % see also xticks
 %display(h1, 'Used Histogram properties (h1)');
 hold on
-h2 = histogram(bins2,'BinLimits',[0.5 31.5], 'BinMethod','integers'); % see also xticks
+h2 = histogram(bins2,'BinLimits',BinLimitsRange,'BinMethod','integers'); % see also xticks
 %display(h2, 'Used Histogram properties (h2)');
 
 yAxisHeight =  max(h1.Values) + 1; yAxisHeight
@@ -81,10 +86,32 @@ tail(TT)
 
 % https://de.mathworks.com/help/matlab/ref/retime.html?s_tid=doc_ta
 TT2 = retime(TT,'daily','mean');
+tail(TT2, 64)
 
 % https://de.mathworks.com/help/matlab/ref/varfun.html
+% due to mean method in function retime following varfun function is no longer required
 TTmean = varfun(@mean,TT2,'GroupingVariables','Timestamps');
-whos TTmean TT2
+whos TTmean TT2 TT   %TTmean and TT2 for comparison
 tail(TTmean, 64)
+
+% https://de.mathworks.com/help/matlab/ref/matlab.graphics.chart.primitive.histogram.html?searchHighlight=histogram&s_tid=doc_srchtitle#buhznbh-1
+hold on
+x = BinLimitsRange;
+y = yAxisHeight - 100 - BinLimitsRange; % for test purposes only
+%y = TT2.sonarcm;
+
+% modify legend for 'data1' cell string
+% https://de.mathworks.comt/help/matlab/ref/cell.html?searchHighlight=cell&s_tid=doc_srchtitle
+lgd
+C = lgd.String;
+display(C,'current legend');
+C{3} = 'Sonar daily means [cm]';
+display(C,'modified legend');
+% https://de.mathworks.com/help/matlab/ref/string.html?searchHighlight=string&s_tid=doc_srchtitle
+S = string(C)
+lgd.String = {'Legend1' 'Legend2' 'Legend3'}; lgd
+plot(x,y,'Color','red','LineWidth',3.5)
+lgdUpdate = legend(legend1Text, legend2Text, '31 sonar daily means [cm]');
+whos lgdUpdate
 
 % EOF
