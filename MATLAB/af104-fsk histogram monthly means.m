@@ -98,8 +98,8 @@ tail(TTmean, 64)
 hold on
 x = BinLimitsRange;
 % https://de.mathworks.com/help/matlab/ref/table2array.html?s_tid=doc_ta
-8
-x = [ 1 2 3 4]; x
+
+x = [ 5 6 7 8]; x
 y = [77.123 88.134 92.567 102.456];
 
 
@@ -116,17 +116,20 @@ x
 y2
 y
 
+%BTT = [month(TT2.Timestamps) day(TT2.Timestamps) TT2.sonarcm]
+BTT = [day(TT2.Timestamps) TT2.sonarcm]
+BTTS = sortrows(BTT)
+% https://de.mathworks.com/help/matlab/ref/unique.html?searchHighlight=unique&s_tid=doc_srchtitle#bs_6vpd-1-occurrence
+[BTTSU,ia] = unique(BTTS(:,1),'rows','last')
+uBTTSU = BTTS(ia,:)
+whos uBTTSU
 
-plot(x,BT,'Color','blue','LineWidth',3.5)
+plot(uBTTSU(:,2),'Color','blue','LineWidth',3.5)
 plot(y2,'Color','red','LineWidth',2.5)
 legend3plot = '31 sonar daily means [cm]';
 legend4plot = '32 sonar daily means [cm]';
 lgdUpdate = legend(legend1Text, legend2Text, legend3plot, legend4plot);
 whos lgdUpdate
-
-
-BTT = [month(TT2.Timestamps) day(TT2.Timestamps) TT2.sonarcm]
-whos BTT
 
 % https://itp.tugraz.at/LV/kernbich/AppSoft-1/appsoft1/node23.html
 
