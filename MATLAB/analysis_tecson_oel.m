@@ -17,7 +17,11 @@ writeChannelID = [];
 % TODO - Enter the Write API Key between the '' below:
 writeAPIKey = '';
 
-% Fetch data and parse 
+% Fetch data and parse:
+%   <tr>
+%   <td><strong>Referenzpreis heute:</strong></td>
+%   <td><strong>68,2&nbsp;ct/l</strong></td>
+%   </tr>
 webText = webread(url);
 rawValue = urlfilter(webText, 'Referenzpreis heute:', 1); 
 display(rawValue, 'urlfilter result:');
