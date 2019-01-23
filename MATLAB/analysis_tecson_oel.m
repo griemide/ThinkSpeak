@@ -12,10 +12,10 @@ version  = '19.1.22 '; version
 url = 'https://www.tecson.de/pheizoel.html';
 
 % TODO - Replace the [] with channel ID to write data to:
-writeChannelID = [];
+writeChannelID = 310930; % af104-fsk eval
 
 % TODO - Enter the Write API Key between the '' below:
-writeAPIKey = '';
+writeAPIKey = '4FX35MCBK93LDMKZ';
 
 % Fetch data and parse:
 %   <tr>
@@ -34,6 +34,9 @@ display(CentPerLiter, 'TECSON Referenzpreis heute:');
 EuroPerCBM = CentPerLiter * 1000 / 100;
 display(EuroPerCBM, 'Euro per 1000 Liter:');
 
-% thingSpeakWrite(writeChannelID, CentPerLiter, 'Writekey', writeAPIKey);
+% combine two values fron writing into channel
+eval = [88.8 CentPerLiter]
+
+thingSpeakWrite(writeChannelID, eval, 'Writekey', writeAPIKey);
 
 % EOF
