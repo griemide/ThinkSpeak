@@ -8,6 +8,8 @@ version  = '19.1.24 '; version
 % references (af104-fsk histogram monthly records): 
 % https://thingspeak.com/apps/matlab_visualizations/xxxxx/edit
 
+% https://api.thingspeak.com/update?api_key=4FX35MCBK93LDMKZ&field2=0
+
 readChannelID = 261716; % af104-fsk
 FieldID = 2; % sonar (cm)
 
@@ -35,12 +37,15 @@ TTYmean = retime(TTY,'daily','mean');
 % writing a value on same timestamp will produce thingSpeakWrite error
 % since timestamp used is already with sam time protion. E.g. '22-Jan-2019 00:00:00'
 TTYmean.Timestamps = datetime('now');
+TTYmean.sonarcm = round(TTYmean.sonarcm,1);
 whos TTYmean
 TTYmean
+% meanValue = round(TTYmean.sonarcm,1);
 
 writeChannelID = 310930; % af104-fsk eval
 writeAPIKey = '4FX35MCBK93LDMKZ';
-response = thingSpeakWrite(writeChannelID, TTYmean, 'Writekey', writeAPIKey);
+response = thingSpeakWrite(writeChannelID, TTYmean, 'Writekey', writeAPIKey); % tested OK
+%response = thingSpeakWrite(writeChannelID,'Fields',[1],'Values',meanValue,'Writekey', writeAPIKey); % tested OK
 display(response,'Response by ThingSpeak server');
 
 % EOF
