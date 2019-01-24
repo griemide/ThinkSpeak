@@ -9,6 +9,8 @@ version  = '19.1.24 '; version
 % based on following example
 % https://de.mathworks.com/help/thingspeak/read-live-web-data-for-vessels-at-the-port-of-boston.html
 
+% https://api.thingspeak.com/update?api_key=4FX35MCBK93LDMKZ&field2=0 %% e.g. select specific field only
+
 % Specify the url containing information on current oel price [ct per liter]
 url = 'https://www.tecson.de/pheizoel.html';
 
@@ -18,11 +20,6 @@ readChannelID = writeChannelID;
 
 % TODO - Enter the Write API Key between the '' below:
 writeAPIKey = '4FX35MCBK93LDMKZ';
-
-% read last records for already (unchanged) values
-fields = 1;
-NumPoints = 1;
-lastRecord = thingSpeakRead(readChannelID, 'Fields', fields, 'NumPoints', NumPoints);
 
 % Fetch data and parse:
 %   <tr>
@@ -42,7 +39,22 @@ EuroPerCBM = CentPerLiter * 1000 / 100;
 display(EuroPerCBM, 'Euro per 1000 Liter:');
 
 % combine lastRecords value(s) before writing into channel
-eval = [lastRecord CentPerLiter]
-response=thingSpeakWrite(writeChannelID, eval, 'Writekey', writeAPIKey)
+% read last records for already (unchanged) values
+% fields = 1;
+% NumPoints = 1;
+% lastRecord = thingSpeakRead(readChannelID, 'Fields', fields, 'NumPoints', NumPoints);
+% eval = [lastRecord CentPerLiter]
+% response=thingSpeakWrite(writeChannelID, eval, 'Writekey', writeAPIKey)
+
+response = thingSpeakWrite(writeChannelID,'Fields',[2],'Values',CentPerLiter,'Writekey', writeAPIKey); % tested OK
+display(response,'Response by ThingSpeak server');
+
+% http://api.thingspeak.com/update?api_key=4FX35MCBK93LDMKZ&&status=price
+r = matlab.net.http.RequestMessage;
+uri = 'http://api.thingspeak.com/update?api_key=4FX35MCBK93LDMKZ&status=price';
+r = complete(r,uri); 
+reqmethod = r.Method
+r
+r.Header
 
 % EOF
