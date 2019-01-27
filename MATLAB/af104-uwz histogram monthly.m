@@ -2,8 +2,8 @@
 
 author   = 'M. Gries'; author
 created  = '19.1.1  '; % granted from af104-fsz histogram monthly
-modified = '19.1.1  '; % field3 evaluation (KWh)
-version  = '19.1.1  '; version
+modified = '19.1.27 '; % fixed errors due to 8000 numpoint limitation
+version  = '19.1.27 '; version
 
 % references (af104-fsz histogram over time): 
 % https://thingspeak.com/apps/matlab_visualizations/264686/edit
@@ -21,8 +21,8 @@ display(chInfo, 'ThinkSpeak channel information');
 
 % references to table vs. timetable handling (including NaT and NaN resp.)
 % https://de.mathworks.com/help/matlab/examples/preprocess-and-explore-bicycle-count-data-using-timetable.html
-TT.Properties.DimensionNames
-% remove rows with NaN variables
+TT.Properties.DimensionNames;
+% remove rows with NaN variables64
 TT = rmmissing(TT);
 whos TT
 head(TT)
@@ -54,7 +54,7 @@ bins2 = cleanTimeStampsDays2; %  from 1..31
 KWhInTotal1 = numel(TTTM);
 KWhInTotal2 = numel(TTLM);
 
-display(bins1, 'Bins (range 1..31)');
+% display(bins1, 'Bins (range 1..31)');
 display(KWhInTotal1, 'Number Liter after cleaning (This Month)');
 
 h1 = histogram(bins1,'BinLimits',[0.5 31.5],'BinMethod','integers'); % see also xticks
@@ -73,9 +73,9 @@ ylabel(histogramYlabel);
 % Add a legend
 legend1Text = [int2str(KWhInTotal1), ' Liter in total (this month)'];
 legend2Text = [int2str(KWhInTotal2), ' Liter in total (last month)'];
-lgd = legend(legend1Text, legend2Text)
-%lgd.Location = 'best'; 
-lgd.Location = 'southwest';
+lgd = legend(legend1Text, legend2Text);
+lgd.Location = 'best'; 
+% lgd.Location = 'southwest';
 grid on
 grid minor
 
