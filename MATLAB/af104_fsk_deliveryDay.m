@@ -3,7 +3,7 @@
 author   = 'M. Gries'; author
 created  = '19.1.28 '; % based on af104_fsk_eval
 modified = '19.1.28 '; % uses dedicate datetime range (e.g. oil delivery day 2018-12-11)
-version  = '19.1.28 '; version
+version  = '19.1.29 '; version
 
 % references:
 % https://de.mathworks.com/help/thingspeak/thingspeakread.html?searchHighlight=thingspeakread
@@ -46,11 +46,22 @@ levelRemain = levelDiffDelivery - levelDiffNow
 % tssum = sum(ts)
 % https://ch.mathworks.com/help/matlab/ref/datenum.html
 format long
-% = [levelNow.Timestamps levelBeforeMean.Timestamps];
+% tsDiff = [levelNow.Timestamps levelBeforeMean.Timestamps];
 tsDiff = [levelBeforeMean.Timestamps levelNow.Timestamps]
 DateNumber = datenum(tsDiff)
 %ts = transpose(tsDiff)
 tssum = sum(DateNumber)
-tsdiff = diff(DateNumber)
+tsdiff = diff(DateNumber);
+% tsdiff  = tsdiff + 0.5
+display(tsdiff,'Days since last oil delivery');
+
+format short g
+datevec(tsdiff)
+
+formatOut = 'yyyy-mm-dd';
+% formatOut = 'yyyy-mm-dd HH:MM:SS';
+datestr(tsdiff,formatOut)
+
+% whos
 
 % EOF
